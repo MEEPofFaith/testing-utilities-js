@@ -1,0 +1,7 @@
+name: mod-utils
+displayName: Testing Utilities
+author: "[accent]MEEP of Faith"
+description: Utilities for testing stuff. Not intended for use in multiplayer.
+version: 0.1
+minGameVersion: 121
+hidden: true
