@@ -4,8 +4,8 @@ author: "[accent]MEEP of Faith"
 description:
   '''
   Utilities for testing stuff. Not intended for use in multiplayer.
-  [accent]Team Changer[]: Change teams easilty. Hold to collapse/expand
-  [accent]Seppuku Button[]: Instantly kill yourself. Press and hold to commit crawler.
+  Team Changer: Change teams easilty. Hold to collapse/expand
+  Seppuku Button: Instantly kill yourself. Press and hold to commit crawler.
   '''
 version: 0.1
 minGameVersion: 121
