@@ -23,7 +23,8 @@ function addSingle(t, team, num){
       h += Core.graphics.getDeltaTime() * 60;
       if(h > longPress){
         folded = true;
-        if(mode < 0) mode = Team.baseTeams.length;
+        mode--;
+        if(mode < 0) mode = Team.mainTeams.length;
       }
     }
     else{
