@@ -151,6 +151,6 @@ if(!Vars.headless){
     const meta = Vars.mods.locateMod("test-utils").meta;
     meta.displayName = "[#FCC21B]Testing Utilities";
     meta.author = "[#FCC21B]MEEP of Faith";
-    meta.description = "Utilities for testing stuff. Not intended for use in multiplayer.\n[#FCC21B]Team Changer:[] Change teams easilty. Hold to collapse/expand\n[#FCC21B]Seppuku Button:[] Instantly kill yourself. Press and hold to commit crawler."
+    meta.description = "Utilities for testing stuff. Not intended for use in multiplayer.\n[#FCC21B]Team Changer:[] Change teams easilty. Hold to collapse or expand the list.\n[#FCC21B]Seppuku Button:[] Instantly kill yourself. Press and hold to commit crawler."
   });
 }
