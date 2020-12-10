@@ -15,6 +15,7 @@ function addSingle(t, team, num){
   b.clicked(() => {
     if(h > longPress) return;
     mode = num;
+    curTeam = team;
     Vars.player.team(team);
   });
   b.update(() => {
