@@ -1,5 +1,5 @@
 const teams = [Team.derelict, Team.sharded, Team.crux, Team.green, Team.purple, Team.blue];
-const mainTeams = [Team.sharded, Team.crux];
+const mainTeams = [1, 2];
 const titleList = ["[#4d4e58] Derelict[]", "[accent]Sharded[]", "[#f25555]Crux[]", "[#54d67d]Green[]", "[#995bb0]Purple[]", "[#5a4deb]Blue[]"];
 var mode = 1;
 var curTeam = Team.sharded;
@@ -23,8 +23,6 @@ function addSingle(t, team, num){
       h += Core.graphics.getDeltaTime() * 60;
       if(h > longPress){
         folded = true;
-        mode--;
-        if(mode < 0) mode = Team.mainTeams.length;
       }
     }
     else{
@@ -42,9 +40,9 @@ function addMini(t, teamList){
   b.clicked(() => {
     if(h2 > longPress) return;
     mode++;
-    if(mode >= teamList.length) mode = 0;
-    Vars.player.team(teamList[mode]);
-    curTeam = teams[teams.indexOf(teamList[mode])];
+    if(mode >= teamList[teamList.length]) mode = teamList[0];
+    Vars.player.team(teams[mode]);
+    curTeam = teams[mode];
   });
   b.update(() => {
     if(b.isPressed()){
