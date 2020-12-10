@@ -11,7 +11,6 @@ function addSingle(t, team, num){
   var b = new Button(Styles.logict);
   var h = 0;
   b.label(prov(() => (titleList[teams.indexOf(team)])));
-  //b.label(prov(() => (curTeam.name));
   b.clicked(() => {
     if(h > longPress) return;
     mode = num;
@@ -36,13 +35,14 @@ function addMini(t, teamList){
   var b = new Button(Styles.logict);
   var h2 = 0;
   b.label(prov(() => (titleList[teams.indexOf(curTeam)])));
-  //b.label(prov(() => (curTeam.name));
   b.clicked(() => {
     if(h2 > longPress) return;
-    mode++;
-    if(mode >= teamList[teamList.length]) mode = teamList[0];
-    Vars.player.team(teams[mode]);
+    do{
+      mode++;
+      if(mode > teamList[teamList.length - 1]) mode = teamList[0];
+    }while(teamList.indexOf(mode) == -1);
     curTeam = teams[mode];
+    Vars.player.team(curTeam);
   });
   b.update(() => {
     if(b.isPressed()){
