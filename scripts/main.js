@@ -30,7 +30,7 @@ function addSingle(t, team, num){
       h = 0;
     }
   });
-  return t.add(b).size(50, 40).color(team.color).pad(1);
+  return t.add(b).size(40, 40).color(team.color).pad(1);
 }
 
 function addMini(t, teamList){
@@ -61,6 +61,9 @@ function addMini(t, teamList){
 
 function addKill(t){
   var b = new ImageButton(Vars.ui.getIcon("commandAttack", "cancel"), Styles.logici);
+  b.style.down = Styles.flatDown;
+  b.style.over = Styles.flatOver;
+  b.style.disabled = Styles.black8;
   b.style.imageDisabledColor = Color.lightGray;
   b.style.imageUpColor = Color.white;
   b.image(Core.atlas.find("test-utils-seppuku")).size(25, 25).padLeft(-24);
@@ -79,7 +82,6 @@ function addKill(t){
       h3 = 0;
     }
     b.setColor(curTeam.color);
-    
     if(!Vars.player.unit().dead && !Vars.player.unit().health <= 0){
       if(timers.get(1, 20)){
         var icon = Vars.player.unit().type != null ? new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full)) : new TextureRegionDrawable(Core.atlas.find("none"));
@@ -107,10 +109,6 @@ function addMiniT(table){
     t.background(Tex.buttonEdge3);
     addMini(t, mainTeams).width(100);
   })).padBottom(TCOffset);
-  table.table(Styles.black5, cons(t => {
-    t.background(Tex.buttonEdge3);
-    addKill(t);
-  })).padBottom(TCOffset);
   table.fillParent = true;
   table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client();
 }
@@ -121,7 +119,16 @@ function addKillT(table){
     addKill(t);
   })).padBottom(64 + TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client();
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client() && !(Vars.player.unit().type == UnitTypes.block);
+}
+
+function addMiniKillT(table){
+  table.table(Styles.black5, cons(t => {
+    t.background(Tex.buttonEdge3);
+    addKill(t);
+  })).padBottom(TCOffset).padLeft(104);
+  table.fillParent = true;
+  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client() && !(Vars.player.unit().type == UnitTypes.block);
 }
 
 if(!Vars.headless){
