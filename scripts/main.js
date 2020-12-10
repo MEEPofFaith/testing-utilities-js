@@ -3,7 +3,8 @@ const mainTeams = [1, 2];
 const titleList = ["[#4d4e58] Derelict[]", "[accent]Sharded[]", "[#f25555]Crux[]", "[#54d67d]Green[]", "[#995bb0]Purple[]", "[#5a4deb]Blue[]"];
 var mode = 1;
 var curTeam = Team.sharded;
-const timer = new Interval(1);
+const timers = new Interval(2);
+var TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? 64 : 0;
 
 var folded = false;
 const longPress = 30;
@@ -59,9 +60,11 @@ function addMini(t, teamList){
 }
 
 function addKill(t){
-  var b = new ImageButton(Vars.ui.getIcon("commandAttack", "cancel"), Styles.clearTransi);
+  var b = new ImageButton(Vars.ui.getIcon("commandAttack", "cancel"), Styles.logici);
+  b.style.imageDisabledColor = Color.lightGray;
+  b.style.imageUpColor = Color.white;
+  b.image(Core.atlas.find("test-utils-seppuku")).size(25, 25).padLeft(-24);
   b.label(prov(() => ("Seppuku"))).padLeft(8);
-  //var b = new ImageButton(Core.atlas.find("command-attack"), Styles.clearTransi);
   var h3 = 0;
   b.clicked(() => {
     if(h3 > longPress) return;
@@ -70,12 +73,19 @@ function addKill(t){
   b.update(() => {
     if(b.isPressed()){
       h3 += Core.graphics.getDeltaTime() * 60;
-      if(h3 > longPress && timer.get(5) && Vars.player.unit() != null) Vars.player.unit().kill();
+      if(h3 > longPress && timers.get(0, 5) && Vars.player.unit() != null) Vars.player.unit().kill();
     }
     else{
       h3 = 0;
     }
     b.setColor(curTeam.color);
+    
+    if(!Vars.player.unit().dead && !Vars.player.unit().health <= 0){
+      if(timers.get(1, 20)){
+        var icon = Vars.player.unit().type != null ? new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full)) : new TextureRegionDrawable(Core.atlas.find("none"));
+        b.style.imageUp = icon;
+      }
+    }
   });
   return t.add(b).size(120, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0);
 }
@@ -87,27 +97,31 @@ function addTable(table){
     for(var i = 0; i < teams.length; i++){
       addSingle(t, teams[i], i).width(widths[i]);
     }
-  }));
+  })).padBottom(TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client();
 }
 
 function addMiniT(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     addMini(t, mainTeams).width(100);
-  }));
+  })).padBottom(TCOffset);
+  table.table(Styles.black5, cons(t => {
+    t.background(Tex.buttonEdge3);
+    addKill(t);
+  })).padBottom(TCOffset);
   table.fillParent = true;
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
+  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client();
 }
 
 function addKillT(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     addKill(t);
-  })).padBottom(64);
+  })).padBottom(64 + TCOffset);
   table.fillParent = true;
-  table.visibility = () => Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client();
 }
 
 if(!Vars.headless){
