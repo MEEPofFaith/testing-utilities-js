@@ -6,7 +6,8 @@ description:
   Utilities for testing stuff. Not intended for use in multiplayer.
   Team Changer: Change teams easilty. Hold to collapse/expand
   Seppuku Button: Instantly kill yourself. Press and hold to commit crawler.
+  Clone Button: Instantly clones your player unit. Press and hold to mass clone.
   '''
-version: 0.1
+version: 0.3
 minGameVersion: 121
 hidden: true

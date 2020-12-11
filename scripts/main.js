@@ -3,7 +3,7 @@ const mainTeams = [1, 2];
 const titleList = ["[#4d4e58] Derelict[]", "[accent]Sharded[]", "[#f25555]Crux[]", "[#54d67d]Green[]", "[#995bb0]Purple[]", "[#5a4deb]Blue[]"];
 var mode = 1;
 var curTeam = Team.sharded;
-const timers = new Interval(2);
+const timers = new Interval(3);
 var TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? 64 : 0;
 
 var folded = false;
@@ -60,14 +60,19 @@ function addMini(t, teamList){
 }
 
 function addKill(t){
-  var b = new ImageButton(Vars.ui.getIcon("commandAttack", "cancel"), Styles.logici);
+  var b = new ImageButton(new TextureRegionDrawable(UnitTypes.gamma.icon(Cicon.full)), Styles.logici);
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
   b.style.disabled = Styles.black8;
   b.style.imageDisabledColor = Color.lightGray;
   b.style.imageUpColor = Color.white;
-  b.image(Core.atlas.find("test-utils-seppuku")).size(25, 25).padLeft(-24);
-  b.label(prov(() => ("Seppuku"))).padLeft(8);
+  
+  var offset = -4;
+  b.style.pressedOffsetX = offset;
+  b.style.unpressedOffsetX = offset;
+  
+  b.image(Core.atlas.find("test-utils-seppuku")).size(40, 40).padLeft(-60);
+  b.label(prov(() => ("Seppuku"))).padLeft(-8);
   var h3 = 0;
   b.clicked(() => {
     if(h3 > longPress) return;
@@ -89,7 +94,54 @@ function addKill(t){
       }
     }
   });
-  return t.add(b).size(120, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+  return t.add(b).size(136, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+}
+
+function dupe(t){
+  var b = new ImageButton(Vars.ui.getIcon("units", "copy"), Styles.logici);
+  b.style.down = Styles.flatDown;
+  b.style.over = Styles.flatOver;
+  b.style.disabled = Styles.black8;
+  b.style.imageDisabledColor = Color.lightGray;
+  b.style.imageUpColor = Color.white;
+  
+  var offset = -0.5;
+  b.style.pressedOffsetX = offset;
+  b.style.unpressedOffsetX = offset;
+  
+  b.label(prov(() => ("Clone"))).padLeft(8);
+  var h4 = 0;
+  b.clicked(() => {
+    if(h4 > longPress) return;
+    if(Vars.player.unit().type != null){
+      var unit = Vars.player.unit().type.create(Vars.player.team());
+      Tmp.v1.rnd(2 * Vars.tilesize);
+      
+      unit.set(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+      unit.rotation = Mathf.random(360);
+      unit.add();
+      Fx.spawn.at(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+    }
+  });
+  b.update(() => {
+    if(b.isPressed()){
+      h4 += Core.graphics.getDeltaTime() * 60;
+      if(h4 > longPress && timers.get(1, 5) && Vars.player.unit().type != null){
+        var unit = Vars.player.unit().type.create(Vars.player.team());
+        Tmp.v1.rnd(2 * Vars.tilesize);
+        
+        unit.set(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+        unit.rotation = Mathf.random(360);
+        unit.add();
+        Fx.spawn.at(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+      }
+    }
+    else{
+      h4 = 0;
+    }
+    b.setColor(curTeam.color);
+  });
+  return t.add(b).size(112, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0);
 }
 
 function addTable(table){
@@ -106,46 +158,52 @@ function addTable(table){
 
 function addMiniT(table){
   table.table(Styles.black5, cons(t => {
-    t.background(Tex.buttonEdge3);
+    t.background(Tex.buttonEdge1);
     addMini(t, mainTeams).width(100);
   })).padBottom(TCOffset);
   table.fillParent = true;
   table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client();
 }
 
-function addKillT(table){
+function addSecondT(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
+    dupe(t);
     addKill(t);
   })).padBottom(64 + TCOffset);
   table.fillParent = true;
   table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client() && !(Vars.player.unit().type == UnitTypes.block);
 }
 
-function addMiniKillT(table){
+function addMiniSecondT(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
+    dupe(t);
     addKill(t);
-  })).padBottom(TCOffset).padLeft(104);
+  })).padBottom(TCOffset).padLeft(120);
   table.fillParent = true;
   table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client() && !(Vars.player.unit().type == UnitTypes.block);
 }
 
 if(!Vars.headless){
   var tt = new Table();
-  var mt = new Table();
   var kt = new Table();
+  var mt = new Table();
+  var mkt = new Table();
   
   Events.on(ClientLoadEvent, () => {
     tt.bottom().left();
-    mt.bottom().left();
     kt.bottom().left();
+    mt.bottom().left();
+    mkt.bottom().left();
     addTable(tt);
+    addSecondT(kt);
     addMiniT(mt);
-    addKillT(kt);
+    addMiniSecondT(mkt);
     Vars.ui.hudGroup.addChild(tt);
+    Vars.ui.hudGroup.addChild(kt);  
     Vars.ui.hudGroup.addChild(mt);
-    Vars.ui.hudGroup.addChild(kt);
+    Vars.ui.hudGroup.addChild(mkt);
   });
   
   Events.on(WorldLoadEvent, () => {
@@ -158,6 +216,6 @@ if(!Vars.headless){
     const meta = Vars.mods.locateMod("test-utils").meta;
     meta.displayName = "[#FCC21B]Testing Utilities";
     meta.author = "[#FCC21B]MEEP of Faith";
-    meta.description = "Utilities for testing stuff. Not intended for use in multiplayer.\n[#FCC21B]Team Changer:[] Change teams easilty. Hold to collapse or expand the list.\n[#FCC21B]Seppuku Button:[] Instantly kill yourself. Press and hold to commit crawler."
+    meta.description = "Utilities for testing stuff. Not intended for use in multiplayer.\n[#FCC21B]Team Changer:[] Change teams easilty. Hold to collapse or expand the list.\n[#FCC21B]Seppuku Button:[] Instantly kill yourself. Press and hold to commit crawler.\n[#FCC21B]Clone Button:[] Instantly clones your player unit. Press and hold to mass clone."
   });
 }
