@@ -124,7 +124,7 @@ function dupe(t){
     if(h4 > longPress) return;
     if(Vars.player.unit().type != null){
       var unit = Vars.player.unit().type.create(Vars.player.team());
-      Tmp.v1.rnd(Mathf.random(3 * Vars.tilesize));
+      Tmp.v1.rnd(Mathf.random(Vars.player.unit().type.hitSize * 3));
       
       unit.set(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
       unit.rotation = Mathf.random(360);
@@ -137,7 +137,7 @@ function dupe(t){
       h4 += Core.graphics.getDeltaTime() * 60;
       if(h4 > longPress && timers.get(2, 5) && Vars.player.unit().type != null){
         var unit = Vars.player.unit().type.create(Vars.player.team());
-        Tmp.v1.rnd(Mathf.random(3 * Vars.tilesize));
+        Tmp.v1.rnd(Mathf.random(Vars.player.unit().type.hitSize * 3));
         
         unit.set(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
         unit.rotation = Mathf.random(360);
