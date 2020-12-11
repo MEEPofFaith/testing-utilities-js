@@ -3,7 +3,7 @@ const mainTeams = [1, 2];
 const titleList = ["[#4d4e58] Derelict[]", "[accent]Sharded[]", "[#f25555]Crux[]", "[#54d67d]Green[]", "[#995bb0]Purple[]", "[#5a4deb]Blue[]"];
 var mode = 1;
 var curTeam = Team.sharded;
-const timers = new Interval(3);
+const timers = new Interval(4);
 var TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? 64 : 0;
 
 var folded = false;
@@ -70,8 +70,9 @@ function addKill(t){
   var offset = -4;
   b.style.pressedOffsetX = offset;
   b.style.unpressedOffsetX = offset;
+  b.style.checkedOffsetX = offset;
   
-  b.image(Core.atlas.find("test-utils-seppuku")).size(40, 40).padLeft(-60);
+  b.image(Core.atlas.find("test-utils-seppuku")).size(40).padLeft(-60);
   b.label(prov(() => ("Seppuku"))).padLeft(-8);
   var h3 = 0;
   b.clicked(() => {
@@ -93,10 +94,10 @@ function addKill(t){
       h3 = 0;
     }
     b.setColor(curTeam.color);
-    if(!Vars.player.unit().dead && !Vars.player.unit().health <= 0){
+    if(!Vars.player.unit().dead && Vars.player.unit().health > 0){
       if(timers.get(1, 20)){
-        var icon = Vars.player.unit().type != null ? new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full)) : new TextureRegionDrawable(Core.atlas.find("none"));
-        b.style.imageUp = icon;
+        var kIcon = Vars.player.unit().type != null ? new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full)) : Vars.ui.getIcon("cancel");
+        b.style.imageUp = kIcon;
       }
     }
   });
@@ -114,14 +115,16 @@ function dupe(t){
   var offset = -0.5;
   b.style.pressedOffsetX = offset;
   b.style.unpressedOffsetX = offset;
+  b.style.checkedOffsetX = offset;
   
-  b.label(prov(() => ("Clone"))).padLeft(8);
+  b.image(Core.atlas.find("test-utils-clone")).size(40).padLeft(-60);
+  b.label(prov(() => ("Clone"))).padLeft(-8);
   var h4 = 0;
   b.clicked(() => {
     if(h4 > longPress) return;
     if(Vars.player.unit().type != null){
       var unit = Vars.player.unit().type.create(Vars.player.team());
-      Tmp.v1.rnd(2 * Vars.tilesize);
+      Tmp.v1.rnd(Mathf.random(3 * Vars.tilesize));
       
       unit.set(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
       unit.rotation = Mathf.random(360);
@@ -132,9 +135,9 @@ function dupe(t){
   b.update(() => {
     if(b.isPressed()){
       h4 += Core.graphics.getDeltaTime() * 60;
-      if(h4 > longPress && timers.get(1, 5) && Vars.player.unit().type != null){
+      if(h4 > longPress && timers.get(2, 5) && Vars.player.unit().type != null){
         var unit = Vars.player.unit().type.create(Vars.player.team());
-        Tmp.v1.rnd(2 * Vars.tilesize);
+        Tmp.v1.rnd(Mathf.random(3 * Vars.tilesize));
         
         unit.set(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
         unit.rotation = Mathf.random(360);
@@ -146,6 +149,12 @@ function dupe(t){
       h4 = 0;
     }
     b.setColor(curTeam.color);
+    if(!Vars.player.unit().dead && Vars.player.unit().health > 0){
+      if(timers.get(3, 20)){
+        var dIcon = Vars.player.unit().type != null ? new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full)) : Vars.ui.getIcon("cancel");
+        b.style.imageUp = dIcon;
+      }
+    }
   });
   return t.add(b).size(112, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0);
 }
