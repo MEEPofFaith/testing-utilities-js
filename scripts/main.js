@@ -76,12 +76,18 @@ function addKill(t){
   var h3 = 0;
   b.clicked(() => {
     if(h3 > longPress) return;
+    Vars.player.unit().health = -1;
+    Vars.player.unit().maxHealth = -1;
     Vars.player.unit().kill();
   });
   b.update(() => {
     if(b.isPressed()){
       h3 += Core.graphics.getDeltaTime() * 60;
-      if(h3 > longPress && timers.get(0, 5) && Vars.player.unit() != null) Vars.player.unit().kill();
+      if(h3 > longPress && timers.get(0, 5) && Vars.player.unit() != null){
+        Vars.player.unit().health = -1;
+        Vars.player.unit().maxHealth = -1;
+        Vars.player.unit().kill();
+      }
     }
     else{
       h3 = 0;
