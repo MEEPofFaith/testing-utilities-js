@@ -80,7 +80,7 @@ function addKill(t){
     Vars.player.unit().health = -1;
     Vars.player.unit().dead = true;
     Vars.player.unit().kill();
-    if(Vars.player.unit().dead = false){
+    if(Vars.player.unit().dead == false || Vars.player.unit().health != -1){
       Vars.player.unit().destroy();
     }
   });
@@ -91,7 +91,7 @@ function addKill(t){
         Vars.player.unit().health = -1;
         Vars.player.unit().dead = true;
         Vars.player.unit().kill();
-        if(Vars.player.unit().dead = false){
+        if(Vars.player.unit().dead == false || Vars.player.unit().health != -1){
           Vars.player.unit().destroy();
         }
       }
