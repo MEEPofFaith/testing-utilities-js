@@ -193,7 +193,7 @@ function addSecondT(table){
     addKill(t);
   })).padBottom(64 + TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client() && !(Vars.player.unit().type == UnitTypes.block);
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block);
 }
 
 function addMiniSecondT(table){
@@ -203,7 +203,7 @@ function addMiniSecondT(table){
     addKill(t);
   })).padBottom(TCOffset).padLeft(120);
   table.fillParent = true;
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client() && !(Vars.player.unit().type == UnitTypes.block);
+  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block);
 }
 
 if(!Vars.headless){
