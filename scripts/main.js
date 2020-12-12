@@ -1,5 +1,5 @@
 const teams = [Team.derelict, Team.sharded, Team.crux, Team.green, Team.purple, Team.blue];
-const mainTeams = [1, 2];
+const mainTeams = [0, 1, 2, 3, 4, 5];
 const titleList = ["[#4d4e58] Derelict[]", "[accent]Sharded[]", "[#f25555]Crux[]", "[#54d67d]Green[]", "[#995bb0]Purple[]", "[#5a4deb]Blue[]"];
 var mode = 1;
 var curTeam = Team.sharded;
