@@ -174,7 +174,7 @@ function addTable(table){
     }
   })).padBottom(TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client();
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
 }
 
 function addMiniT(table){
@@ -183,7 +183,7 @@ function addMiniT(table){
     addMini(t, mainTeams).width(100);
   })).padBottom(TCOffset);
   table.fillParent = true;
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.state.rules.mode() == Gamemode.sandbox || Vars.state.rules.mode() == Gamemode.editor) && !Vars.net.client();
+  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
 }
 
 function addSecondT(table){
