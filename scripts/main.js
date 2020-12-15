@@ -78,9 +78,9 @@ function addKill(t){
   b.clicked(() => {
     if(h3 > longPress) return;
     var playerU = Vars.player.unit();
-    var type = player.type;
+    var type = playerU.type;
     if(type != null){
-      Effect.shake(type.hitSize * 10, type.hitSize * 10, playerU);
+      Effect.shake(type.hitSize / 1.5, Mathf.pow(type.hitSize, 3.5), playerU);
       Fx.dynamicExplosion.at(playerU.x, playerU.y, type.hitSize / 5);
     }
     playerU.elevation = 0;
@@ -93,9 +93,9 @@ function addKill(t){
       h3 += Core.graphics.getDeltaTime() * 60;
       if(h3 > longPress && timers.get(0, 5) && Vars.player.unit() != null){
         var playerU = Vars.player.unit();
-        var type = player.type;
+        var type = playerU.type;
         if(type != null){
-          Effect.shake(type.hitSize, type.hitSize * 1.5, playerU);
+          Effect.shake(type.hitSize / 1.5, Mathf.pow(type.hitSize, 3.5), playerU);
           Fx.dynamicExplosion.at(playerU.x, playerU.y, type.hitSize / 5);
         }
         playerU.elevation = 0;
