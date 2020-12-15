@@ -80,7 +80,7 @@ function addKill(t){
     var playerU = Vars.player.unit();
     var type = player.type;
     if(type != null){
-      Effect.shake(type.hitSize * 10, type.hitSize * 10, playerU); //Doesn't work for some reason
+      Effect.shake(type.hitSize * 10, type.hitSize * 10, playerU);
       Fx.dynamicExplosion.at(playerU.x, playerU.y, type.hitSize / 5);
     }
     playerU.elevation = 0;
@@ -95,7 +95,7 @@ function addKill(t){
         var playerU = Vars.player.unit();
         var type = player.type;
         if(type != null){
-          Effect.shake(type.hitSize, type.hitSize * 1.5, playerU); //Doesn't work for some reason
+          Effect.shake(type.hitSize, type.hitSize * 1.5, playerU);
           Fx.dynamicExplosion.at(playerU.x, playerU.y, type.hitSize / 5);
         }
         playerU.elevation = 0;
