@@ -77,23 +77,31 @@ function addKill(t){
   var h3 = 0;
   b.clicked(() => {
     if(h3 > longPress) return;
-    Vars.player.unit().health = -1;
-    Vars.player.unit().dead = true;
-    Vars.player.unit().kill();
-    if(Vars.player.unit().dead == false || Vars.player.unit().health != -1){
-      Vars.player.unit().destroy();
+    var playerU = Vars.player.unit();
+    var type = player.type;
+    if(type != null){
+      Effect.shake(type.hitSize * 10, type.hitSize * 10, playerU);
+      Fx.dynamicExplosion.at(playerU.x, playerU.y, type.hitSize / 5);
     }
+    playerU.elevation = 0;
+    playerU.health = -1;
+    playerU.dead = true;
+    playerU.destroy(); // I n s t a n t l y    d i e
   });
   b.update(() => {
     if(b.isPressed()){
       h3 += Core.graphics.getDeltaTime() * 60;
       if(h3 > longPress && timers.get(0, 5) && Vars.player.unit() != null){
-        Vars.player.unit().health = -1;
-        Vars.player.unit().dead = true;
-        Vars.player.unit().kill();
-        if(Vars.player.unit().dead == false || Vars.player.unit().health != -1){
-          Vars.player.unit().destroy();
+        var playerU = Vars.player.unit();
+        var type = player.type;
+        if(type != null){
+          Effect.shake(type.hitSize, type.hitSize * 1.5, playerU);
+          Fx.dynamicExplosion.at(playerU.x, playerU.y, type.hitSize / 5);
         }
+        playerU.elevation = 0;
+        playerU.health = -1;
+        playerU.dead = true;
+        playerU.destroy(); // I n s t a n t l y    d i e
       }
     }
     else{
