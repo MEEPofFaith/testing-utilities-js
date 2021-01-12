@@ -10,6 +10,20 @@ var TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? 64 : 
 var folded = false;
 const longPress = 30;
 
+const healEffect = new Effect(60, e => {
+  var rise = e.finpow() * 28;
+  var opacity = Mathf.curve(e.fin(), 0, 0.2) - Mathf.curve(e.fin(), 0.9, 1);
+  Draw.alpha(opacity);
+  Draw.rect(Core.atlas.find("test-utils-heal"), e.x, e.y + rise);
+});
+
+const invincibilityEffect = new Effect(60, e => {
+  var rise = e.finpow() * 28;
+  var opacity = Mathf.curve(e.fin(), 0, 0.2) - Mathf.curve(e.fin(), 0.9, 1);
+  Draw.alpha(opacity);
+  Draw.rect(Core.atlas.find("test-utils-invincibility"), e.x, e.y + rise);
+});
+
 function addSingle(t, team, num, mobile){
   var b = new Button(Styles.logict);
   var h = 0;
@@ -18,12 +32,14 @@ function addSingle(t, team, num, mobile){
   }else{
     b.label(prov(() => (titleList[teams.indexOf(team)])));
   }
+  
   b.clicked(() => {
     if(h > longPress) return;
     mode = num;
     curTeam = team;
     Vars.player.team(team);
   });
+  
   b.update(() => {
     if(b.isPressed()){
       h += Core.graphics.getDeltaTime() * 60;
@@ -46,6 +62,7 @@ function addMini(t, teamList, mobile){
   }else{
     b.label(prov(() => (titleList[teams.indexOf(curTeam)])));
   }
+  
   b.clicked(() => {
     if(h2 > longPress) return;
     do{
@@ -55,6 +72,7 @@ function addMini(t, teamList, mobile){
     curTeam = teams[mode];
     Vars.player.team(curTeam);
   });
+  
   b.update(() => {
     if(b.isPressed()){
       h2 += Core.graphics.getDeltaTime() * 60;
@@ -82,9 +100,8 @@ function addKill(t, mobile){
   b.style.checkedOffsetX = offset;
   
   b.image(Core.atlas.find("test-utils-seppuku")).size(40).padLeft(-60);
-  if(!mobile){
-    b.label(prov(() => ("Seppuku"))).padLeft(-8);
-  }
+  if(!mobile) b.label(prov(() => ("Seppuku"))).padLeft(-8);
+  
   var h3 = 0;
   b.clicked(() => {
     if(h3 > longPress) return;
@@ -99,6 +116,7 @@ function addKill(t, mobile){
     playerU.dead = true;
     playerU.destroy(); // I n s t a n t l y    d i e
   });
+  
   b.update(() => {
     if(b.isPressed()){
       h3 += Core.graphics.getDeltaTime() * 60;
@@ -129,7 +147,7 @@ function addKill(t, mobile){
   return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
 }
 
-function dupe(t, mobile){
+function addClone(t, mobile){
   var b = new ImageButton(Vars.ui.getIcon("units", "copy"), Styles.logici);
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
@@ -143,9 +161,8 @@ function dupe(t, mobile){
   b.style.checkedOffsetX = offset;
   
   b.image(Core.atlas.find("test-utils-clone")).size(40).padLeft(-60);
-  if(!mobile){
-    b.label(prov(() => ("Clone"))).padLeft(-8);
-  }
+  if(!mobile) b.label(prov(() => ("Clone"))).padLeft(-8);
+  
   var h4 = 0;
   b.clicked(() => {
     if(h4 > longPress) return;
@@ -159,6 +176,7 @@ function dupe(t, mobile){
       Fx.spawn.at(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
     }
   });
+  
   b.update(() => {
     if(b.isPressed()){
       h4 += Core.graphics.getDeltaTime() * 60;
@@ -184,6 +202,58 @@ function dupe(t, mobile){
     }
   });
   return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+}
+
+function addHeal(t, mobile){
+  var b = new ImageButton(Core.atlas.find("test-utils-heal"), Styles.logici);
+  b.style.down = Styles.flatDown;
+  b.style.over = Styles.flatOver;
+  b.style.disabled = Styles.black8;
+  b.style.imageDisabledColor = Color.lightGray;
+  b.style.imageUpColor = Color.white;
+  
+  var offset = mobile ? 0 : -4;
+  b.style.pressedOffsetX = offset;
+  b.style.unpressedOffsetX = offset;
+  b.style.checkedOffsetX = offset;
+  
+  if(!mobile){
+    b.label(prov(() => ("Heal"))).padLeft(0);
+  }
+  
+  b.clicked(() => {
+    var player = Vars.player;
+    player.unit().health = Vars.player.unit().maxHealth;
+    healEffect.at(player.getX(), player.getY());
+  });
+  
+  return t.add(b).color(Color.valueOf("84F491")).pad(1).padLeft(0).padRight(0);
+}
+
+function addInvincibility(t, mobile){
+  var b = new ImageButton(Core.atlas.find("test-utils-invincibility"), Styles.logici);
+  b.style.down = Styles.flatDown;
+  b.style.over = Styles.flatOver;
+  b.style.disabled = Styles.black8;
+  b.style.imageDisabledColor = Color.lightGray;
+  b.style.imageUpColor = Color.white;
+  
+  var offset = mobile ? 0 : -4;
+  b.style.pressedOffsetX = offset;
+  b.style.unpressedOffsetX = offset;
+  b.style.checkedOffsetX = offset;
+  
+  if(!mobile){
+    b.label(prov(() => ("\"Invincibility\""))).padLeft(0);
+  }
+  
+  b.clicked(() => {
+    var player = Vars.player;
+    player.unit().health = 1000000;
+    invincibilityEffect.at(player.getX(), player.getY());
+  });
+  
+  return t.add(b).color(Color.valueOf("F3E979")).pad(1).padLeft(0).padRight(0);
 }
 
 function addTable(table){
@@ -218,56 +288,87 @@ function addMiniT(table){
 }
 
 const mobileWidth = 56;
+const iconWidth = 40;
 
 function addSecondT(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     if(Vars.mobile){
-      dupe(t, true).size(mobileWidth, 40);
+      addClone(t, true).size(mobileWidth, 40);
       addKill(t, true).size(mobileWidth, 40);
     }else{
-      dupe(t, false).size(104, 40);
+      addClone(t, false).size(104, 40);
       addKill(t, false).size(140, 40);
     }
-  })).padBottom(64 + TCOffset);
+  })).padBottom(64 + 64 + TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block);
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null);
 }
 
 function addMiniSecondT(table){
+  var healWidth = iconWidth * 2 + 20
+  var xOff = healWidth + (Vars.mobile ? 44 : 120);
+  table.table(Styles.black5, cons(t => {
+    t.background(Tex.buttonEdge3);
+    addClone(t, true).size(mobileWidth, 40);
+    addKill(t, true).size(mobileWidth, 40);
+  })).padBottom(TCOffset).padLeft(xOff);
+  table.fillParent = true;
+  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null);
+}
+
+function addThirdT(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     if(Vars.mobile){
-      dupe(t, true).size(mobileWidth, 40);
-      addKill(t, true).size(mobileWidth, 40);
+      addHeal(t, true).size(iconWidth, 40);
+      addInvincibility(t, true).size(iconWidth, 40);
     }else{
-      dupe(t, false).size(104, 40);
-      addKill(t, false).size(140, 40);
+      addHeal(t, false).size(96, 40);
+      addInvincibility(t, false).size(180, 40);
     }
+  })).padBottom(64 + TCOffset);
+  table.fillParent = true;
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null);
+}
+
+function addMiniThirdT(table){
+  table.table(Styles.black5, cons(t => {
+    t.background(Tex.pane);
+    addHeal(t, true).size(iconWidth, 40);
+    addInvincibility(t, true).size(iconWidth, 40);
   })).padBottom(TCOffset).padLeft(Vars.mobile ? 44 : 120);
   table.fillParent = true;
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block);
+  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null);
 }
 
 if(!Vars.headless){
   var tt = new Table();
-  var kt = new Table();
+  var ktt = new Table();
   var mt = new Table();
   var mkt = new Table();
+  var ht = new Table();
+  var mht = new Table();
   
   Events.on(ClientLoadEvent, () => {
     tt.bottom().left();
-    kt.bottom().left();
+    ktt.bottom().left();
     mt.bottom().left();
     mkt.bottom().left();
+    ht.bottom().left();
+    mht.bottom().left();
     addTable(tt);
-    addSecondT(kt);
+    addSecondT(ktt);
     addMiniT(mt);
     addMiniSecondT(mkt);
+    addThirdT(ht);
+    addMiniThirdT(mht);
     Vars.ui.hudGroup.addChild(tt);
-    Vars.ui.hudGroup.addChild(kt);  
+    Vars.ui.hudGroup.addChild(ktt);  
     Vars.ui.hudGroup.addChild(mt);
-    Vars.ui.hudGroup.addChild(mkt);
+    Vars.ui.hudGroup.addChild(mkt); 
+    Vars.ui.hudGroup.addChild(ht);
+    Vars.ui.hudGroup.addChild(mht);
   });
   
   Events.on(WorldLoadEvent, () => {
@@ -280,6 +381,6 @@ if(!Vars.headless){
     const meta = Vars.mods.locateMod("test-utils").meta;
     meta.displayName = "[#FCC21B]Testing Utilities";
     meta.author = "[#FCC21B]MEEP of Faith";
-    meta.description = "Utilities for testing stuff. Not intended for use in multiplayer.\n[#FCC21B]Team Changer:[] Change teams easilty. Hold to collapse or expand the list.\n[#FCC21B]Seppuku Button:[] Instantly kill yourself. Press and hold to commit crawler.\n[#FCC21B]Clone Button:[] Instantly clones your player unit. Press and hold to mass clone."
+    meta.description = "Utilities for testing stuff.\n\n[#FCC21B]Team Changer:[] Change teams easilty. Hold to collapse or expand the list.\n[#FCC21B]Seppuku Button:[] Instantly kill yourself. Press and hold to commit crawler.\n[#FCC21B]Clone Button:[] Instantly clones your player unit. Press and hold to mass clone.\n[#FCC21B]Heal Button:[] Resets your player unit's hp to its max.\n[#FCC21B]\"Invincibility\" Button:[] Sets your player unit's hp to 1000000."
   });
 }
