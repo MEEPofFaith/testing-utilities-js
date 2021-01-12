@@ -1,6 +1,7 @@
 const teams = [Team.derelict, Team.sharded, Team.crux, Team.green, Team.purple, Team.blue];
 const mainTeams = [0, 1, 2, 3, 4, 5];
-const titleList = ["[#4d4e58] Derelict[]", "[accent]Sharded[]", "[#f25555]Crux[]", "[#54d67d]Green[]", "[#995bb0]Purple[]", "[#5a4deb]Blue[]"];
+const titleList = ["[#4d4e58]Derelict[]", "[accent]Sharded[]", "[#f25555]Crux[]", "[#54d67d]Green[]", "[#995bb0]Purple[]", "[#5a4deb]Blue[]"];
+const abbreList = ["[#4d4e58]D[]", "[accent]S[]", "[#f25555]C[]", "[#54d67d]G[]", "[#995bb0]P[]", "[#5a4deb]B[]"];
 var mode = 1;
 var curTeam = Team.sharded;
 const timers = new Interval(4);
@@ -9,10 +10,14 @@ var TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? 64 : 
 var folded = false;
 const longPress = 30;
 
-function addSingle(t, team, num){
+function addSingle(t, team, num, mobile){
   var b = new Button(Styles.logict);
   var h = 0;
-  b.label(prov(() => (titleList[teams.indexOf(team)])));
+  if(mobile){
+    b.label(prov(() => (abbreList[teams.indexOf(team)])));
+  }else{
+    b.label(prov(() => (titleList[teams.indexOf(team)])));
+  }
   b.clicked(() => {
     if(h > longPress) return;
     mode = num;
@@ -33,10 +38,14 @@ function addSingle(t, team, num){
   return t.add(b).size(40, 40).color(team.color).pad(1);
 }
 
-function addMini(t, teamList){
+function addMini(t, teamList, mobile){
   var b = new Button(Styles.logict);
   var h2 = 0;
-  b.label(prov(() => (titleList[teams.indexOf(curTeam)])));
+  if(mobile){
+    b.label(prov(() => (abbreList[teams.indexOf(curTeam)])));
+  }else{
+    b.label(prov(() => (titleList[teams.indexOf(curTeam)])));
+  }
   b.clicked(() => {
     if(h2 > longPress) return;
     do{
@@ -59,7 +68,7 @@ function addMini(t, teamList){
   return t.add(b).size(40, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0);
 }
 
-function addKill(t){
+function addKill(t, mobile){
   var b = new ImageButton(new TextureRegionDrawable(UnitTypes.gamma.icon(Cicon.full)), Styles.logici);
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
@@ -67,13 +76,15 @@ function addKill(t){
   b.style.imageDisabledColor = Color.lightGray;
   b.style.imageUpColor = Color.white;
   
-  var offset = -4;
+  var offset = mobile ? 0 : -5;
   b.style.pressedOffsetX = offset;
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
   
   b.image(Core.atlas.find("test-utils-seppuku")).size(40).padLeft(-60);
-  b.label(prov(() => ("Seppuku"))).padLeft(-8);
+  if(!mobile){
+    b.label(prov(() => ("Seppuku"))).padLeft(-8);
+  }
   var h3 = 0;
   b.clicked(() => {
     if(h3 > longPress) return;
@@ -115,10 +126,10 @@ function addKill(t){
       }
     }
   });
-  return t.add(b).size(136, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
 }
 
-function dupe(t){
+function dupe(t, mobile){
   var b = new ImageButton(Vars.ui.getIcon("units", "copy"), Styles.logici);
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
@@ -126,13 +137,15 @@ function dupe(t){
   b.style.imageDisabledColor = Color.lightGray;
   b.style.imageUpColor = Color.white;
   
-  var offset = -0.5;
+  var offset = mobile ? 0 : -4;
   b.style.pressedOffsetX = offset;
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
   
   b.image(Core.atlas.find("test-utils-clone")).size(40).padLeft(-60);
-  b.label(prov(() => ("Clone"))).padLeft(-8);
+  if(!mobile){
+    b.label(prov(() => ("Clone"))).padLeft(-8);
+  }
   var h4 = 0;
   b.clicked(() => {
     if(h4 > longPress) return;
@@ -170,15 +183,21 @@ function dupe(t){
       }
     }
   });
-  return t.add(b).size(112, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
 }
 
 function addTable(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
-    var widths = [100, 100, 60, 68, 70, 60];
-    for(var i = 0; i < teams.length; i++){
-      addSingle(t, teams[i], i).width(widths[i]);
+    if(Vars.mobile){
+      for(var i = 0; i < teams.length; i++){
+        addSingle(t, teams[i], i, true).width(24);
+      }
+    }else{
+      var widths = [100, 100, 60, 68, 70, 60];
+      for(var i = 0; i < teams.length; i++){
+        addSingle(t, teams[i], i, false).width(widths[i]);
+      }
     }
   })).padBottom(TCOffset);
   table.fillParent = true;
@@ -188,17 +207,28 @@ function addTable(table){
 function addMiniT(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge1);
-    addMini(t, mainTeams).width(100);
+    if(Vars.mobile){
+      addMini(t, mainTeams, true).width(24);
+    }else{
+      addMini(t, mainTeams, false).width(100);
+    }
   })).padBottom(TCOffset);
   table.fillParent = true;
   table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
 }
 
+const mobileWidth = 56;
+
 function addSecondT(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
-    dupe(t);
-    addKill(t);
+    if(Vars.mobile){
+      dupe(t, true).size(mobileWidth, 40);
+      addKill(t, true).size(mobileWidth, 40);
+    }else{
+      dupe(t, false).size(104, 40);
+      addKill(t, false).size(140, 40);
+    }
   })).padBottom(64 + TCOffset);
   table.fillParent = true;
   table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block);
@@ -207,9 +237,14 @@ function addSecondT(table){
 function addMiniSecondT(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
-    dupe(t);
-    addKill(t);
-  })).padBottom(TCOffset).padLeft(120);
+    if(Vars.mobile){
+      dupe(t, true).size(mobileWidth, 40);
+      addKill(t, true).size(mobileWidth, 40);
+    }else{
+      dupe(t, false).size(104, 40);
+      addKill(t, false).size(140, 40);
+    }
+  })).padBottom(TCOffset).padLeft(Vars.mobile ? 44 : 120);
   table.fillParent = true;
   table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block);
 }
