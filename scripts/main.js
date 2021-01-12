@@ -271,7 +271,8 @@ function addTable(table){
     }
   })).padBottom(TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
+  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
 function addMiniT(table){
@@ -284,7 +285,8 @@ function addMiniT(table){
     }
   })).padBottom(TCOffset);
   table.fillParent = true;
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
+  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
 const mobileWidth = 56;
@@ -300,9 +302,10 @@ function addSecondT(table){
       addClone(t, false).size(104, 40);
       addKill(t, false).size(140, 40);
     }
-  })).padBottom(64 + 64 + TCOffset);
+  })).padBottom((Vars.mobile ? 62 : 124) + TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null);
+  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
 function addMiniSecondT(table){
@@ -314,7 +317,8 @@ function addMiniSecondT(table){
     addKill(t, true).size(mobileWidth, 40);
   })).padBottom(TCOffset).padLeft(xOff);
   table.fillParent = true;
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null);
+  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
 function addThirdT(table){
@@ -327,9 +331,10 @@ function addThirdT(table){
       addHeal(t, false).size(96, 40);
       addInvincibility(t, false).size(180, 40);
     }
-  })).padBottom(64 + TCOffset);
+  })).padBottom((Vars.mobile ? 124 : 62) + TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null);
+  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
 function addMiniThirdT(table){
@@ -339,7 +344,8 @@ function addMiniThirdT(table){
     addInvincibility(t, true).size(iconWidth, 40);
   })).padBottom(TCOffset).padLeft(Vars.mobile ? 44 : 120);
   table.fillParent = true;
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null);
+  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
 if(!Vars.headless){
