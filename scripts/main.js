@@ -16,6 +16,7 @@ const healEffect = new Effect(60, e => {
   Draw.alpha(opacity);
   Draw.rect(Core.atlas.find("test-utils-heal"), e.x, e.y + rise);
 });
+healEffect.layer = Layer.flyingUnit + 1;
 
 const invincibilityEffect = new Effect(60, e => {
   var rise = e.finpow() * 28;
@@ -23,6 +24,7 @@ const invincibilityEffect = new Effect(60, e => {
   Draw.alpha(opacity);
   Draw.rect(Core.atlas.find("test-utils-invincibility"), e.x, e.y + rise);
 });
+invincibilityEffect.layer = Layer.flyingUnit + 1;
 
 function addSingle(t, team, num, mobile){
   var b = new Button(Styles.logict);
