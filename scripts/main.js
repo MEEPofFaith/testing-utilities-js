@@ -389,6 +389,9 @@ if(!Vars.headless){
     const meta = Vars.mods.locateMod("test-utils").meta;
     meta.displayName = "[#FCC21B]Testing Utilities";
     meta.author = "[#FCC21B]MEEP of Faith";
-    meta.description = "Utilities for testing stuff.\n\n[#FCC21B]Team Changer:[] Change teams easilty. Hold to collapse or expand the list.\n[#FCC21B]Seppuku Button:[] Instantly kill yourself. Press and hold to commit crawler.\n[#FCC21B]Clone Button:[] Instantly clones your player unit. Press and hold to mass clone.\n[#FCC21B]Heal Button:[] Resets your player unit's hp to its max.\n[#FCC21B]\"Invincibility\" Button:[] Sets your player unit's hp to 1000000."
+    meta.description = "Utilities for testing stuff.\n\n[#FCC21B]Team Changer:[] Change teams easilty. Hold to collapse or expand the list.\n[#FCC21B]Seppuku Button:[] Instantly kill yourself. Press and hold to commit crawler.\n[#FCC21B]Clone Button:[] Instantly clones your player unit. Press and hold to mass clone.\n[#FCC21B]Heal Button:[] Resets your player unit's hp to its max.\n[#FCC21B]\"Invincibility\" Button:[] Sets your player unit's hp to 1000000.\n\nAlso increases zooming range."
   });
+  
+  Vars.renderer.minZoom = 0.667; //Zoom out farther
+  Vars.renderer.maxZoom = 24; //Get a closer look at your Gamma
 }
