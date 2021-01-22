@@ -9,7 +9,7 @@ description:
   Seppuku Button: Instantly kill yourself. Press and hold to commit crawler.
   Clone Button: Instantly clones your player unit. Press and hold to mass clone.
   Heal Button: Resets your player unit's hp to its max.
-  "Invincibility" Button: Sets your player unit's hp to 1000000.
+  Invincibility Button: Sets your player unit's hp to (basically) infinity.
   
   Also increases zooming range.
   '''

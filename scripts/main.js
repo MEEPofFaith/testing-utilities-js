@@ -10,21 +10,13 @@ var TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? 64 : 
 var folded = false;
 const longPress = 30;
 
-const healEffect = new Effect(60, e => {
+const iconEffect = new Effect(60, e => {
   var rise = e.finpow() * 28;
   var opacity = Mathf.curve(e.fin(), 0, 0.2) - Mathf.curve(e.fin(), 0.9, 1);
   Draw.alpha(opacity);
-  Draw.rect(Core.atlas.find("test-utils-heal"), e.x, e.y + rise);
+  Draw.rect(Core.atlas.find(e.data), e.x, e.y + rise);
 });
-healEffect.layer = Layer.flyingUnit + 1;
-
-const invincibilityEffect = new Effect(60, e => {
-  var rise = e.finpow() * 28;
-  var opacity = Mathf.curve(e.fin(), 0, 0.2) - Mathf.curve(e.fin(), 0.9, 1);
-  Draw.alpha(opacity);
-  Draw.rect(Core.atlas.find("test-utils-invincibility"), e.x, e.y + rise);
-});
-invincibilityEffect.layer = Layer.flyingUnit + 1;
+iconEffect.layer = Layer.flyingUnit + 1;
 
 function addSingle(t, team, num, mobile){
   var b = new Button(Styles.logict);
@@ -226,7 +218,7 @@ function addHeal(t, mobile){
   b.clicked(() => {
     var player = Vars.player;
     player.unit().health = Vars.player.unit().maxHealth;
-    healEffect.at(player.getX(), player.getY());
+    iconEffect.at(player.getX(), player.getY(), 0, "test-utils-heal");
   });
   
   return t.add(b).color(Color.valueOf("84F491")).pad(1).padLeft(0).padRight(0);
@@ -246,13 +238,13 @@ function addInvincibility(t, mobile){
   b.style.checkedOffsetX = offset;
   
   if(!mobile){
-    b.label(prov(() => ("\"Invincibility\""))).padLeft(0);
+    b.label(prov(() => ("Invincibility"))).padLeft(0);
   }
   
   b.clicked(() => {
     var player = Vars.player;
-    player.unit().health = 1000000;
-    invincibilityEffect.at(player.getX(), player.getY());
+    player.unit().health = Number.MAX_VALUE;
+    iconEffect.at(player.getX(), player.getY(), 0, "test-utils-invincibility");
   });
   
   return t.add(b).color(Color.valueOf("F3E979")).pad(1).padLeft(0).padRight(0);
@@ -331,7 +323,7 @@ function addThirdT(table){
       addInvincibility(t, true).size(iconWidth, 40);
     }else{
       addHeal(t, false).size(96, 40);
-      addInvincibility(t, false).size(180, 40);
+      addInvincibility(t, false).size(164, 40);
     }
   })).padBottom((Vars.mobile ? 124 : 62) + TCOffset);
   table.fillParent = true;
