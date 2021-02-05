@@ -1,5 +1,6 @@
 const teams = [Team.derelict, Team.sharded, Team.crux, Team.green, Team.purple, Team.blue];
-const mainTeams = [0, 1, 2, 3, 4, 5];
+const teamNames = ["Team.derelict", "Team.sharded", "Team.crux", "Team.green", "Team.purple", "Team.blue"];
+const mainTeams = [1, 2];
 const titleList = ["[#4d4e58]Derelict[]", "[accent]Sharded[]", "[#f25555]Crux[]", "[#54d67d]Green[]", "[#995bb0]Purple[]", "[#5a4deb]Blue[]"];
 const abbreList = ["[#4d4e58]D[]", "[accent]S[]", "[#f25555]C[]", "[#54d67d]G[]", "[#995bb0]P[]", "[#5a4deb]B[]"];
 var mode = 1;
@@ -10,6 +11,8 @@ var TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? 64 : 
 var folded = false;
 const longPress = 30;
 
+let playerName = Core.settings.getString("name");
+
 const iconEffect = new Effect(60, e => {
   var rise = e.finpow() * 28;
   var opacity = Mathf.curve(e.fin(), 0, 0.2) - Mathf.curve(e.fin(), 0.9, 1);
@@ -17,6 +20,19 @@ const iconEffect = new Effect(60, e => {
   Draw.rect(Core.atlas.find(e.data), e.x, e.y + rise);
 });
 iconEffect.layer = Layer.flyingUnit + 1;
+
+function teamLocal(){
+  Vars.player.team(curTeam);
+}
+
+function teamRemote(){
+  const code = "Groups.player.each(e =>{e.name.includes(\"" + playerName + "\")?e.team(" + teamNames[teams.indexOf(curTeam)] + "):0})";
+  Call.sendChatMessage("/js " + code);
+}
+
+function changeTeam(){
+  (Vars.net.client() ? teamRemote : teamLocal)();
+}
 
 function addSingle(t, team, num, mobile){
   var b = new Button(Styles.logict);
@@ -31,7 +47,7 @@ function addSingle(t, team, num, mobile){
     if(h > longPress) return;
     mode = num;
     curTeam = team;
-    Vars.player.team(team);
+    changeTeam();
   });
   
   b.update(() => {
@@ -64,7 +80,7 @@ function addMini(t, teamList, mobile){
       if(mode > teamList[teamList.length - 1]) mode = teamList[0];
     }while(teamList.indexOf(mode) == -1);
     curTeam = teams[mode];
-    Vars.player.team(curTeam);
+    changeTeam();
   });
   
   b.update(() => {
@@ -99,32 +115,44 @@ function addKill(t, mobile){
   var h3 = 0;
   b.clicked(() => {
     if(h3 > longPress) return;
-    var playerU = Vars.player.unit();
-    var type = playerU.type;
-    if(type != null){
-      Effect.shake(type.hitSize / 1.5, Mathf.pow(type.hitSize, 3.5), playerU);
-      Fx.dynamicExplosion.at(playerU.x, playerU.y, type.hitSize / 5);
+    if(Vars.net.client()){
+      const code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().kill():0})";
+      Call.sendChatMessage("/js " + code);
+    }else{
+      var playerU = Vars.player.unit();
+      var type = playerU.type;
+      if(type != null){
+        Effect.shake(type.hitSize / 1.5, Mathf.pow(type.hitSize, 3.5), playerU);
+        Fx.dynamicExplosion.at(playerU.x, playerU.y, type.hitSize / 5);
+      }
+      playerU.kill();
+      playerU.elevation = 0;
+      playerU.health = -1;
+      playerU.dead = true;
+      playerU.destroy(); // I n s t a n t l y    d i e
     }
-    playerU.elevation = 0;
-    playerU.health = -1;
-    playerU.dead = true;
-    playerU.destroy(); // I n s t a n t l y    d i e
   });
   
   b.update(() => {
     if(b.isPressed()){
       h3 += Core.graphics.getDeltaTime() * 60;
-      if(h3 > longPress && timers.get(0, 5) && Vars.player.unit() != null){
-        var playerU = Vars.player.unit();
-        var type = playerU.type;
-        if(type != null){
-          Effect.shake(type.hitSize / 1.5, Mathf.pow(type.hitSize, 3.5), playerU);
-          Fx.dynamicExplosion.at(playerU.x, playerU.y, type.hitSize / 5);
+      if(h3 > longPress && timers.get(0, 5)){
+        if(Vars.net.client()){
+          const code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().kill():0})";
+          Call.sendChatMessage("/js " + code);
+        }else if(Vars.player.unit() != null){
+          var playerU = Vars.player.unit();
+          var type = playerU.type;
+          if(type != null){
+            Effect.shake(type.hitSize / 1.5, Mathf.pow(type.hitSize, 3.5), playerU);
+            Fx.dynamicExplosion.at(playerU.x, playerU.y, type.hitSize / 5);
+          }
+          playerU.kill();
+          playerU.elevation = 0;
+          playerU.health = -1;
+          playerU.dead = true;
+          playerU.destroy(); // I n s t a n t l y    d i e
         }
-        playerU.elevation = 0;
-        playerU.health = -1;
-        playerU.dead = true;
-        playerU.destroy(); // I n s t a n t l y    d i e
       }
     }
     else{
@@ -160,7 +188,10 @@ function addClone(t, mobile){
   var h4 = 0;
   b.clicked(() => {
     if(h4 > longPress) return;
-    if(Vars.player.unit().type != null){
+    if(Vars.net.client()){
+      const code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().type.spawn(p.team(),p.getX(),p.getY()):0})";
+      Call.sendChatMessage("/js " + code);
+    }else if(Vars.player.unit().type != null){
       var unit = Vars.player.unit().type.create(Vars.player.team());
       Tmp.v1.rnd(Mathf.random(Vars.player.unit().type.hitSize * 3));
       
@@ -174,14 +205,19 @@ function addClone(t, mobile){
   b.update(() => {
     if(b.isPressed()){
       h4 += Core.graphics.getDeltaTime() * 60;
-      if(h4 > longPress && timers.get(2, 5) && Vars.player.unit().type != null){
-        var unit = Vars.player.unit().type.create(Vars.player.team());
-        Tmp.v1.rnd(Mathf.random(Vars.player.unit().type.hitSize * 3));
-        
-        unit.set(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
-        unit.rotation = Mathf.random(360);
-        unit.add();
-        Fx.spawn.at(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+      if(h4 > longPress && timers.get(2, 5)){
+        if(Vars.net.client()){
+          const code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().type.spawn(p.team(),p.getX(),p.getY()):0})";
+          Call.sendChatMessage("/js " + code);
+        }else if(Vars.player.unit().type != null){
+          var unit = Vars.player.unit().type.create(Vars.player.team());
+          Tmp.v1.rnd(Mathf.random(Vars.player.unit().type.hitSize * 3));
+          
+          unit.set(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+          unit.rotation = Mathf.random(360);
+          unit.add();
+          Fx.spawn.at(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+        }
       }
     }
     else{
@@ -216,9 +252,14 @@ function addHeal(t, mobile){
   }
   
   b.clicked(() => {
-    var player = Vars.player;
-    player.unit().health = Vars.player.unit().maxHealth;
-    iconEffect.at(player.getX(), player.getY(), 0, "test-utils-heal");
+    if(Vars.net.client()){
+      const code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().health=p.unit().maxHealth:0})";
+      Call.sendChatMessage("/js " + code);
+    }else{
+      var player = Vars.player;
+      player.unit().health = Vars.player.unit().maxHealth;
+      iconEffect.at(player.getX(), player.getY(), 0, "test-utils-heal");
+    }
   });
   
   return t.add(b).color(Color.valueOf("84F491")).pad(1).padLeft(0).padRight(0);
@@ -242,9 +283,14 @@ function addInvincibility(t, mobile){
   }
   
   b.clicked(() => {
-    var player = Vars.player;
-    player.unit().health = Number.MAX_VALUE;
-    iconEffect.at(player.getX(), player.getY(), 0, "test-utils-invincibility");
+    if(Vars.net.client()){
+      const code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().health=Number.MAX_VALUE:0})";
+      Call.sendChatMessage("/js " + code);
+    }else{
+      var player = Vars.player;
+      player.unit().health = Number.MAX_VALUE;
+      iconEffect.at(player.getX(), player.getY(), 0, "test-utils-invincibility");
+    }
   });
   
   return t.add(b).color(Color.valueOf("F3E979")).pad(1).padLeft(0).padRight(0);
