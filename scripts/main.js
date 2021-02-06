@@ -192,13 +192,12 @@ function addClone(t, mobile){
       const code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().type.spawn(p.team(),p.getX(),p.getY()):0})";
       Call.sendChatMessage("/js " + code);
     }else if(Vars.player.unit().type != null){
-      var unit = Vars.player.unit().type.create(Vars.player.team());
       Tmp.v1.rnd(Mathf.random(Vars.player.unit().type.hitSize * 3));
-      
-      unit.set(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+      var unit = Vars.player.unit().type.spawn(Vars.player.team(), Vars.player.getX() + Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+
       unit.rotation = Mathf.random(360);
       unit.add();
-      Fx.spawn.at(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+      Fx.spawn.at(Vars.player.getX() + Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
     }
   });
   
@@ -210,13 +209,12 @@ function addClone(t, mobile){
           const code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().type.spawn(p.team(),p.getX(),p.getY()):0})";
           Call.sendChatMessage("/js " + code);
         }else if(Vars.player.unit().type != null){
-          var unit = Vars.player.unit().type.create(Vars.player.team());
           Tmp.v1.rnd(Mathf.random(Vars.player.unit().type.hitSize * 3));
-          
-          unit.set(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+          var unit = Vars.player.unit().type.spawn(Vars.player.team(), Vars.player.getX() + Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+
           unit.rotation = Mathf.random(360);
           unit.add();
-          Fx.spawn.at(Vars.player.getX()+ Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
+          Fx.spawn.at(Vars.player.getX() + Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
         }
       }
     }
