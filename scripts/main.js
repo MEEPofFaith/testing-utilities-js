@@ -255,6 +255,7 @@ function addHeal(t, mobile){
       Call.sendChatMessage("/js " + code);
     }else{
       var player = Vars.player;
+      player.unit().maxHealth = player.unit().type.health;
       player.unit().health = Vars.player.unit().maxHealth;
       iconEffect.at(player.getX(), player.getY(), 0, "test-utils-heal");
     }
@@ -286,6 +287,7 @@ function addInvincibility(t, mobile){
       Call.sendChatMessage("/js " + code);
     }else{
       var player = Vars.player;
+      player.unit().maxHealth = Number.MAX_VALUE;
       player.unit().health = Number.MAX_VALUE;
       iconEffect.at(player.getX(), player.getY(), 0, "test-utils-invincibility");
     }
