@@ -251,10 +251,15 @@ function addHeal(t, mobile){
   
   b.clicked(() => {
     if(Vars.net.client()){
-      const code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().health=p.unit().maxHealth:0})";
+      let code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().dead=false:0})";
+      Call.sendChatMessage("/js " + code);
+      code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().maxHealth=p.unit().type.health:0})";
+      Call.sendChatMessage("/js " + code);
+      code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().health=p.unit().maxHealth:0})";
       Call.sendChatMessage("/js " + code);
     }else{
       var player = Vars.player;
+      player.unit().dead = false;
       player.unit().maxHealth = player.unit().type.health;
       player.unit().health = Vars.player.unit().maxHealth;
       iconEffect.at(player.getX(), player.getY(), 0, "test-utils-heal");
@@ -283,10 +288,15 @@ function addInvincibility(t, mobile){
   
   b.clicked(() => {
     if(Vars.net.client()){
-      const code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().health=Number.MAX_VALUE:0})";
+      let code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().dead=false:0})";
+      Call.sendChatMessage("/js " + code);
+      code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().maxHealth=Number.MAX_VALUE:0})";
+      Call.sendChatMessage("/js " + code);
+      code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().health=Number.MAX_VALUE:0})";
       Call.sendChatMessage("/js " + code);
     }else{
       var player = Vars.player;
+      player.unit().dead = false;
       player.unit().maxHealth = Number.MAX_VALUE;
       player.unit().health = Number.MAX_VALUE;
       iconEffect.at(player.getX(), player.getY(), 0, "test-utils-invincibility");
