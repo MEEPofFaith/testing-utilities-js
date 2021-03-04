@@ -10,9 +10,11 @@ description:
   Clone Button: Instantly clones your player unit. Press and hold to mass clone.
   Heal Button: Resets your player unit's hp to its max.
   Invincibility Button: Sets your player unit's hp to (basically) infinity.
+  Sandbox/Survival Button: Toggles infinite resources.
+  Fill Core Button: Completely fills your core with every item, vanilla and modded.
   
   Also increases zooming range.
   '''
-version: 0.7
-minGameVersion: 122
+version: 0.9
+minGameVersion: 125.1
 hidden: true

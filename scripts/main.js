@@ -6,7 +6,8 @@ const abbreList = ["[#4d4e58]D[]", "[accent]S[]", "[#f25555]C[]", "[#54d67d]G[]"
 var mode = 1;
 var curTeam = Team.sharded;
 const timers = new Interval(4);
-var TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? 64 : 0;
+var buttonHeight = 64;
+var TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? buttonHeight : 0;
 
 var folded = false;
 const longPress = 30;
@@ -20,6 +21,13 @@ const iconEffect = new Effect(60, e => {
   Draw.rect(Core.atlas.find(e.data), e.x, e.y + rise);
 });
 iconEffect.layer = Layer.flyingUnit + 1;
+
+function spawnIconEffect(icon){
+  var player = Vars.player;
+  iconEffect.at(player.getX(), player.getY(), 0, icon);
+}
+
+// Region Team Changer
 
 function teamLocal(){
   Vars.player.team(curTeam);
@@ -95,6 +103,9 @@ function addMini(t, teamList, mobile){
   });
   return t.add(b).size(40, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0);
 }
+
+//Endregion
+//Region Clone/Seppuku
 
 function addKill(t, mobile){
   var b = new ImageButton(new TextureRegionDrawable(UnitTypes.gamma.icon(Cicon.full)), Styles.logici);
@@ -232,6 +243,10 @@ function addClone(t, mobile){
   return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
 }
 
+
+//Endregin
+//Region Heal/Invincibility
+
 function addHeal(t, mobile){
   var b = new ImageButton(Core.atlas.find("test-utils-heal"), Styles.logici);
   b.style.down = Styles.flatDown;
@@ -262,7 +277,7 @@ function addHeal(t, mobile){
       player.unit().dead = false;
       player.unit().maxHealth = player.unit().type.health;
       player.unit().health = Vars.player.unit().maxHealth;
-      iconEffect.at(player.getX(), player.getY(), 0, "test-utils-heal");
+      spawnIconEffect("test-utils-heal");
     }
   });
   
@@ -299,12 +314,87 @@ function addInvincibility(t, mobile){
       player.unit().dead = false;
       player.unit().maxHealth = Number.MAX_VALUE;
       player.unit().health = Number.MAX_VALUE;
-      iconEffect.at(player.getX(), player.getY(), 0, "test-utils-invincibility");
+      spawnIconEffect("test-utils-invincibility");
     }
   });
   
   return t.add(b).color(Color.valueOf("F3E979")).pad(1).padLeft(0).padRight(0);
 }
+
+//EndRegion
+//Region NiChrosia suggesions: sandbox toggle/fill core
+
+function toggleSandbox(){
+  spawnIconEffect(Vars.state.rules.infiniteResources ? "test-utils-survival" : "test-utils-sandbox");
+  Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources;
+};
+
+// Fills the core
+function fillCore(){
+  spawnIconEffect("test-utils-core");
+  let core = Vars.player.core();
+  Vars.content.items().each(i => {(core != null ? core.items.set(i, core.storageCapacity) : null)});
+};
+
+function addSandbox(t, mobile){
+  var b = new ImageButton(Core.atlas.find("test-utils-survival"), Styles.logici);
+  b.style.down = Styles.flatDown;
+  b.style.over = Styles.flatOver;
+  b.style.disabled = Styles.black8;
+  b.style.imageDisabledColor = Color.lightGray;
+  b.style.imageUpColor = Color.white;
+  
+  var offset = mobile ? 0 : -4;
+  b.style.pressedOffsetX = offset;
+  b.style.unpressedOffsetX = offset;
+  b.style.checkedOffsetX = offset;
+  
+  if(!mobile){
+    b.label(() => Vars.state.rules.infiniteResources ? "Survival" : "Sandbox").padLeft(0);
+  }
+  
+  b.clicked(() => {
+    toggleSandbox();
+  });
+
+  b.update(() => {
+    if(Vars.state.rules.infiniteResources != null) b.replaceImage(new Image(Vars.state.rules.infiniteResources ? Core.atlas.find("test-utils-survival") : Core.atlas.find("test-utils-sandbox")));
+    b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+  });
+
+  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+}
+
+function addFillCore(t, mobile){
+  var b = new ImageButton(Core.atlas.find("test-utils-core"), Styles.logici);
+  b.style.down = Styles.flatDown;
+  b.style.over = Styles.flatOver;
+  b.style.disabled = Styles.black8;
+  b.style.imageDisabledColor = Color.lightGray;
+  b.style.imageUpColor = Color.white;
+  
+  var offset = mobile ? 0 : -4;
+  b.style.pressedOffsetX = offset;
+  b.style.unpressedOffsetX = offset;
+  b.style.checkedOffsetX = offset;
+  
+  if(!mobile){
+    b.label(prov(() => ("Fill Core"))).padLeft(0);
+  }
+  
+  b.clicked(() => {
+    fillCore();
+  });
+
+  b.update(() => {
+    b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+  });
+  
+  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+}
+
+//EndRegion
+//Region Team Changer Tables
 
 function addTable(table){
   table.table(Styles.black5, cons(t => {
@@ -339,8 +429,12 @@ function addMiniT(table){
   table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
+//EndRegion
+//Region Clone/Kill Tables
+
 const mobileWidth = 56;
 const iconWidth = 40;
+const midStyle = Vars.mobile ? Styles.pane : Styles.black5;
 
 function addSecondT(table){
   table.table(Styles.black5, cons(t => {
@@ -352,7 +446,7 @@ function addSecondT(table){
       addClone(t, false).size(104, 40);
       addKill(t, false).size(140, 40);
     }
-  })).padBottom((Vars.mobile ? 62 : 124) + TCOffset);
+  })).padBottom((Vars.mobile ? buttonHeight : 3 * buttonHeight) + TCOffset);
   table.fillParent = true;
   var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
   table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
@@ -371,8 +465,11 @@ function addMiniSecondT(table){
   table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
+//EndRegion
+//Region Heal/Invincibility Tables
+
 function addThirdT(table){
-  table.table(Styles.black5, cons(t => {
+  table.table(midStyle, cons(t => {
     t.background(Tex.buttonEdge3);
     if(Vars.mobile){
       addHeal(t, true).size(iconWidth, 40);
@@ -381,7 +478,7 @@ function addThirdT(table){
       addHeal(t, false).size(96, 40);
       addInvincibility(t, false).size(164, 40);
     }
-  })).padBottom((Vars.mobile ? 124 : 62) + TCOffset);
+  })).padBottom((Vars.mobile ? 2 * buttonHeight : 2 * buttonHeight) + TCOffset);
   table.fillParent = true;
   var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
   table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
@@ -398,33 +495,74 @@ function addMiniThirdT(table){
   table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
+//EndRegion
+//Region Sandbox/Fill Core Tables
+
+function addFourthT(table){
+  table.table(Styles.black5, cons(t => {
+    t.background(Tex.buttonEdge3);
+    if(Vars.mobile){
+      addSandbox(t, true).size(iconWidth, 40);
+      addFillCore(t, true).size(iconWidth, 40);
+    }else{
+      addSandbox(t, false).size(108 + iconWidth, 40);
+      addFillCore(t, false).size(96 + iconWidth, 40);
+    }
+  })).padBottom((Vars.mobile ? 3 * buttonHeight : buttonHeight) + TCOffset);
+  table.fillParent = true;
+  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true) && !Vars.net.client();
+}
+
+function addMiniFourthdT(table){
+  table.table(Styles.black5, cons(t => {
+    t.background(Tex.buttonEdge3);
+    addSandbox(t, true).size(iconWidth, 40);
+    addFillCore(t, true).size(iconWidth, 40);
+  })).padBottom(buttonHeight + TCOffset)
+  table.fillParent = true;
+  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true) && !Vars.net.client();
+}
+
+//EndRegion
+//Region Add Tables
+
 if(!Vars.headless){
+  var ft = new Table();
+  var mft = new Table();
+  var st = new Table();
+  var mst = new Table();
   var tt = new Table();
-  var ktt = new Table();
-  var mt = new Table();
-  var mkt = new Table();
-  var ht = new Table();
-  var mht = new Table();
+  var mtt = new Table();
+  var fot = new Table();
+  var mfot = new Table();
   
   Events.on(ClientLoadEvent, () => {
+    ft.bottom().left();
+    mft.bottom().left();
+    st.bottom().left();
+    mst.bottom().left();
     tt.bottom().left();
-    ktt.bottom().left();
-    mt.bottom().left();
-    mkt.bottom().left();
-    ht.bottom().left();
-    mht.bottom().left();
-    addTable(tt);
-    addSecondT(ktt);
-    addMiniT(mt);
-    addMiniSecondT(mkt);
-    addThirdT(ht);
-    addMiniThirdT(mht);
+    mtt.bottom().left();
+    fot.bottom().left();
+    mfot.bottom().left();
+    addTable(ft);
+    addSecondT(mft);
+    addMiniT(st);
+    addMiniSecondT(mst);
+    addThirdT(tt);
+    addMiniThirdT(mtt);
+    addFourthT(fot);
+    addMiniFourthdT(mfot);
+    Vars.ui.hudGroup.addChild(ft);
+    Vars.ui.hudGroup.addChild(mft);  
+    Vars.ui.hudGroup.addChild(st);
+    Vars.ui.hudGroup.addChild(mst); 
     Vars.ui.hudGroup.addChild(tt);
-    Vars.ui.hudGroup.addChild(ktt);  
-    Vars.ui.hudGroup.addChild(mt);
-    Vars.ui.hudGroup.addChild(mkt); 
-    Vars.ui.hudGroup.addChild(ht);
-    Vars.ui.hudGroup.addChild(mht);
+    Vars.ui.hudGroup.addChild(mtt);
+    Vars.ui.hudGroup.addChild(fot);
+    Vars.ui.hudGroup.addChild(mfot);
   });
   
   Events.on(WorldLoadEvent, () => {
@@ -441,5 +579,5 @@ if(!Vars.headless){
   });
   
   Vars.renderer.minZoom = 0.667; //Zoom out farther
-  Vars.renderer.maxZoom = 24; //Get a closer look at your Gamma
+  Vars.renderer.maxZoom = 24; //Get a closer look at yourself
 }
