@@ -344,11 +344,6 @@ function addSandbox(t, mobile){
   b.style.imageDisabledColor = Color.lightGray;
   b.style.imageUpColor = Color.white;
   
-  var offset = mobile ? 0 : -4;
-  b.style.pressedOffsetX = offset;
-  b.style.unpressedOffsetX = offset;
-  b.style.checkedOffsetX = offset;
-  
   if(!mobile){
     b.label(() => Vars.state.rules.infiniteResources ? "Survival" : "Sandbox").padLeft(0);
   }
@@ -358,7 +353,13 @@ function addSandbox(t, mobile){
   });
 
   b.update(() => {
-    if(Vars.state.rules.infiniteResources != null) b.replaceImage(new Image(Vars.state.rules.infiniteResources ? Core.atlas.find("test-utils-survival") : Core.atlas.find("test-utils-sandbox")));
+    //Update offset
+    var offset = mobile ? 0 : Vars.state.rules.infiniteResources ? -3 : -2;
+    b.style.pressedOffsetX = offset;
+    b.style.unpressedOffsetX = offset;
+    b.style.checkedOffsetX = offset;
+
+    b.replaceImage(new Image(Vars.state.rules.infiniteResources ? Core.atlas.find("test-utils-survival") : Core.atlas.find("test-utils-sandbox")));
     b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
   });
 
@@ -373,7 +374,7 @@ function addFillCore(t, mobile){
   b.style.imageDisabledColor = Color.lightGray;
   b.style.imageUpColor = Color.white;
   
-  var offset = mobile ? 0 : -4;
+  var offset = mobile ? 0 : -3;
   b.style.pressedOffsetX = offset;
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
