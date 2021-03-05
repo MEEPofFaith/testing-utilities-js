@@ -11,10 +11,10 @@ description:
   Heal Button: Resets your player unit's hp to its max.
   Invincibility Button: Sets your player unit's hp to (basically) infinity.
   Sandbox/Survival Button: Toggles infinite resources.
-  Fill Core Button: Completely fills your core with every item, vanilla and modded.
+  Core Button: Fill or empty your core of all items. Hold to swap.
   
   Also increases zooming range.
   '''
-version: 0.9
+version: 0.10
 minGameVersion: 125.1
 hidden: true

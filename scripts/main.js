@@ -10,6 +10,7 @@ var buttonHeight = 64;
 var TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? buttonHeight : 0;
 
 var folded = false;
+var fillMode = true;
 const longPress = 30;
 
 let playerName = Core.settings.getString("name");
@@ -111,7 +112,7 @@ function addKill(t, mobile){
   var b = new ImageButton(new TextureRegionDrawable(UnitTypes.gamma.icon(Cicon.full)), Styles.logici);
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
-  b.style.disabled = Styles.black8;
+  b.style.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
   b.style.imageDisabledColor = Color.lightGray;
   b.style.imageUpColor = Color.white;
   
@@ -184,7 +185,7 @@ function addClone(t, mobile){
   var b = new ImageButton(Vars.ui.getIcon("units", "copy"), Styles.logici);
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
-  b.style.disabled = Styles.black8;
+  b.style.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
   b.style.imageDisabledColor = Color.lightGray;
   b.style.imageUpColor = Color.white;
   
@@ -192,6 +193,8 @@ function addClone(t, mobile){
   b.style.pressedOffsetX = offset;
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
+
+  b.setDisabled(() => Vars.state.isCampaign());
   
   b.image(Core.atlas.find("test-utils-clone")).size(40).padLeft(-60);
   if(!mobile) b.label(prov(() => ("Clone"))).padLeft(-8);
@@ -251,7 +254,7 @@ function addHeal(t, mobile){
   var b = new ImageButton(Core.atlas.find("test-utils-heal"), Styles.logici);
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
-  b.style.disabled = Styles.black8;
+  b.style.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
   b.style.imageDisabledColor = Color.lightGray;
   b.style.imageUpColor = Color.white;
   
@@ -288,7 +291,7 @@ function addInvincibility(t, mobile){
   var b = new ImageButton(Core.atlas.find("test-utils-invincibility"), Styles.logici);
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
-  b.style.disabled = Styles.black8;
+  b.style.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
   b.style.imageDisabledColor = Color.lightGray;
   b.style.imageUpColor = Color.white;
   
@@ -296,6 +299,8 @@ function addInvincibility(t, mobile){
   b.style.pressedOffsetX = offset;
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
+
+  b.setDisabled(() => Vars.state.isCampaign());
   
   if(!mobile){
     b.label(prov(() => ("Invincibility"))).padLeft(0);
@@ -331,22 +336,24 @@ function toggleSandbox(){
 
 // Fills the core
 function fillCore(){
-  spawnIconEffect("test-utils-core");
+  spawnIconEffect(fillMode ? "test-utils-core" : "test-utils-dump");
   let core = Vars.player.core();
-  Vars.content.items().each(i => {(core != null ? core.items.set(i, core.storageCapacity) : null)});
+  Vars.content.items().each(i => {(core != null ? core.items.set(i, fillMode ? core.storageCapacity : 0) : null)});
 };
 
 function addSandbox(t, mobile){
   var b = new ImageButton(Core.atlas.find("test-utils-survival"), Styles.logici);
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
-  b.style.disabled = Styles.black8;
-  b.style.imageDisabledColor = Color.lightGray;
+  b.style.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
+  b.style.imageDisabledColor = Color.gray;
   b.style.imageUpColor = Color.white;
-  
+
   if(!mobile){
     b.label(() => Vars.state.rules.infiniteResources ? "Survival" : "Sandbox").padLeft(0);
   }
+
+  b.setDisabled(() => Vars.state.isCampaign());
   
   b.clicked(() => {
     toggleSandbox();
@@ -359,7 +366,7 @@ function addSandbox(t, mobile){
     b.style.unpressedOffsetX = offset;
     b.style.checkedOffsetX = offset;
 
-    b.replaceImage(new Image(Vars.state.rules.infiniteResources ? Core.atlas.find("test-utils-survival") : Core.atlas.find("test-utils-sandbox")));
+    b.replaceImage(new Image(Vars.state.rules.infiniteResources ? Core.atlas.find("test-utils-survival") : Core.atlas.find("test-utils-sandbox")).setScaling(Scaling.bounded));
     b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
   });
 
@@ -370,24 +377,40 @@ function addFillCore(t, mobile){
   var b = new ImageButton(Core.atlas.find("test-utils-core"), Styles.logici);
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
-  b.style.disabled = Styles.black8;
-  b.style.imageDisabledColor = Color.lightGray;
+  b.style.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
+  b.style.imageDisabledColor = Color.gray;
   b.style.imageUpColor = Color.white;
-  
-  var offset = mobile ? 0 : -3;
-  b.style.pressedOffsetX = offset;
-  b.style.unpressedOffsetX = offset;
-  b.style.checkedOffsetX = offset;
-  
-  if(!mobile){
-    b.label(prov(() => ("Fill Core"))).padLeft(0);
-  }
+
+  b.label(() => fillMode ? "Fill Core" : "Dump Core").padLeft(0);
+
+  var h5 = 0;
+  var swap = true;
+
+  b.setDisabled(() => Vars.state.isCampaign());
   
   b.clicked(() => {
-    fillCore();
+    if(swap) fillCore();
   });
 
   b.update(() => {
+    if(b.isPressed() && !b.isDisabled()){
+      h5 += Core.graphics.getDeltaTime() * 60;
+      if(h5 > longPress && swap){
+        fillMode = !fillMode;
+        swap = false;
+      }
+    }else{
+      h5 = 0;
+      swap = true;
+    }
+  
+    //Update Offset
+    var offset = mobile ? 0 : fillMode ? -12 : -4;
+    b.style.pressedOffsetX = offset;
+    b.style.unpressedOffsetX = offset;
+    b.style.checkedOffsetX = offset;
+
+    b.replaceImage(new Image(fillMode ? Core.atlas.find("test-utils-core") : Core.atlas.find("test-utils-dump")).setScaling(Scaling.bounded));
     b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
   });
   
@@ -412,7 +435,7 @@ function addTable(table){
     }
   })).padBottom(TCOffset);
   table.fillParent = true;
-  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  var schem = () => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
   table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
@@ -426,7 +449,7 @@ function addMiniT(table){
     }
   })).padBottom(TCOffset);
   table.fillParent = true;
-  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  var schem = () => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
   table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
@@ -449,7 +472,7 @@ function addSecondT(table){
     }
   })).padBottom((Vars.mobile ? buttonHeight : 3 * buttonHeight) + TCOffset);
   table.fillParent = true;
-  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  var schem = () => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
   table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
@@ -462,7 +485,7 @@ function addMiniSecondT(table){
     addKill(t, true).size(mobileWidth, 40);
   })).padBottom(TCOffset).padLeft(xOff);
   table.fillParent = true;
-  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  var schem = () => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
   table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
@@ -481,7 +504,7 @@ function addThirdT(table){
     }
   })).padBottom((Vars.mobile ? 2 * buttonHeight : 2 * buttonHeight) + TCOffset);
   table.fillParent = true;
-  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  var schem = () => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
   table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
@@ -492,7 +515,7 @@ function addMiniThirdT(table){
     addInvincibility(t, true).size(iconWidth, 40);
   })).padBottom(TCOffset).padLeft(Vars.mobile ? 44 : 120);
   table.fillParent = true;
-  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  var schem = () => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
   table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
@@ -507,11 +530,11 @@ function addFourthT(table){
       addFillCore(t, true).size(iconWidth, 40);
     }else{
       addSandbox(t, false).size(108 + iconWidth, 40);
-      addFillCore(t, false).size(96 + iconWidth, 40);
+      addFillCore(t, false).size(120 + iconWidth, 40);
     }
   })).padBottom((Vars.mobile ? 3 * buttonHeight : buttonHeight) + TCOffset);
   table.fillParent = true;
-  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  var schem = () => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
   table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true) && !Vars.net.client();
 }
 
@@ -522,7 +545,7 @@ function addMiniFourthdT(table){
     addFillCore(t, true).size(iconWidth, 40);
   })).padBottom(buttonHeight + TCOffset)
   table.fillParent = true;
-  var schem = Boolp(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
+  var schem = () => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
   table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true) && !Vars.net.client();
 }
 
