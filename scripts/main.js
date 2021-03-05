@@ -600,7 +600,15 @@ if(!Vars.headless){
     const meta = Vars.mods.locateMod("test-utils").meta;
     meta.displayName = "[#FCC21B]Testing Utilities";
     meta.author = "[#FCC21B]MEEP of Faith";
-    meta.description = "Utilities for testing stuff.\n\n[#FCC21B]Team Changer:[] Change teams easilty. Hold to collapse or expand the list.\n[#FCC21B]Seppuku Button:[] Instantly kill yourself. Press and hold to commit crawler.\n[#FCC21B]Clone Button:[] Instantly clones your player unit. Press and hold to mass clone.\n[#FCC21B]Heal Button:[] Resets your player unit's hp to its max.\n[#FCC21B]\"Invincibility\" Button:[] Sets your player unit's hp to 1000000.\n\nAlso increases zooming range."
+    meta.description = "Utilities for testing stuff" +
+      "\n\n\n[#FCC21B]Team Changer:[] Change teams easilty. Hold to collapse or expand the list." +
+      "\n\n[#FCC21B]Seppuku Button:[] Instantly kill yourself. Press and hold to commit crawler." +
+      "\n\n[#FCC21B]Clone Button:[] Instantly clones your player unit. Press and hold to mass clone. [red](Disabled in campaign)[]" +
+      "\n\n[#FCC21B]Heal Button:[] Sets your player unit's hp to its max." +
+      "\n\n[#FCC21B]Invincibility Button:[] Sets your player unit's hp to infinity. [red](Disabled in campaign)[]" +
+      "\n\n[#FCC21B]Sandbox/Survival Button:[] Toggles infinite resources. [red](Disabled in campaign)[]" +
+      "\n\n[#FCC21B]Fill/Dump Core:[] Fill or empty your core of all items. Hold to swap. [red](Disabled in campaign)[]" +
+      "\n\n\n[#FCC21B]Also increases zooming range.[]"
   });
   
   Vars.renderer.minZoom = 0.667; //Zoom out farther
