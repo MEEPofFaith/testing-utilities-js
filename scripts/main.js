@@ -591,6 +591,7 @@ if(!Vars.headless){
   
   Events.on(WorldLoadEvent, () => {
     folded = false;
+    fillMode = true;
     curTeam = Vars.player.team();
     mode = teams.indexOf(curTeam);
   });
