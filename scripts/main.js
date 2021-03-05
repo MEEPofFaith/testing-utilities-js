@@ -334,11 +334,19 @@ function toggleSandbox(){
   Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources;
 };
 
-// Fills the core
+// Fills/dumps the core
 function fillCore(){
   spawnIconEffect(fillMode ? "test-utils-core" : "test-utils-dump");
   let core = Vars.player.core();
-  Vars.content.items().each(i => {(core != null ? core.items.set(i, fillMode ? core.storageCapacity : 0) : null)});
+  Vars.content.items().each(i => {
+    const item = i;
+    const mode = fillMode;
+    Time.run(Mathf.random(45), run(() => {
+      if(core != null){
+        core.items.set(item, mode ? core.storageCapacity : 0);
+      }
+    }));
+  });
 };
 
 function addSandbox(t, mobile){
@@ -353,7 +361,7 @@ function addSandbox(t, mobile){
     b.label(() => Vars.state.rules.infiniteResources ? "Survival" : "Sandbox").padLeft(0);
   }
 
-  b.setDisabled(() => Vars.state.isCampaign());
+  b.setDisabled(() => Vars.state.isCampaign() || Vars.net.client());
   
   b.clicked(() => {
     toggleSandbox();
@@ -386,7 +394,7 @@ function addFillCore(t, mobile){
   var h5 = 0;
   var swap = true;
 
-  b.setDisabled(() => Vars.state.isCampaign());
+  b.setDisabled(() => Vars.state.isCampaign() || Vars.net.client());
   
   b.clicked(() => {
     if(swap) fillCore();
@@ -535,7 +543,7 @@ function addFourthT(table){
   })).padBottom((Vars.mobile ? 3 * buttonHeight : buttonHeight) + TCOffset);
   table.fillParent = true;
   var schem = () => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true) && !Vars.net.client();
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
 function addMiniFourthdT(table){
@@ -546,7 +554,7 @@ function addMiniFourthdT(table){
   })).padBottom(buttonHeight + TCOffset)
   table.fillParent = true;
   var schem = () => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true) && !Vars.net.client();
+  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
 }
 
 //EndRegion
