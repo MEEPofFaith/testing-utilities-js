@@ -389,7 +389,9 @@ function addFillCore(t, mobile){
   b.style.imageDisabledColor = Color.gray;
   b.style.imageUpColor = Color.white;
 
-  b.label(() => fillMode ? "Fill Core" : "Dump Core").padLeft(0);
+  if(!mobile){
+    b.label(() => fillMode ? "Fill Core" : "Dump Core").padLeft(0);
+  }
 
   var h5 = 0;
   var swap = true;
