@@ -47,9 +47,9 @@ function addSingle(t, team, num, mobile){
   var b = new Button(Styles.logict);
   var h = 0;
   if(mobile){
-    b.label(prov(() => (abbreList[teams.indexOf(team)])));
+    b.label(() => (abbreList[teams.indexOf(team)]));
   }else{
-    b.label(prov(() => (titleList[teams.indexOf(team)])));
+    b.label(() => (titleList[teams.indexOf(team)]));
   }
   
   b.clicked(() => {
@@ -77,9 +77,9 @@ function addMini(t, teamList, mobile){
   var b = new Button(Styles.logict);
   var h2 = 0;
   if(mobile){
-    b.label(prov(() => (abbreList[teams.indexOf(curTeam)])));
+    b.label(() => (abbreList[teams.indexOf(curTeam)]));
   }else{
-    b.label(prov(() => (titleList[teams.indexOf(curTeam)])));
+    b.label(() => (titleList[teams.indexOf(curTeam)]));
   }
   
   b.clicked(() => {
@@ -122,7 +122,9 @@ function addKill(t, mobile){
   b.style.checkedOffsetX = offset;
   
   b.image(Core.atlas.find("test-utils-seppuku")).size(40).padLeft(-60);
-  if(!mobile) b.label(prov(() => ("Seppuku"))).padLeft(-8);
+  if(!mobile){
+    b.label(() => b.isDisabled() ? "[gray]Seppuku[]" : "[white]Seppuku[]").padLeft(-8);
+  }
   
   var h3 = 0;
   b.clicked(() => {
@@ -197,7 +199,9 @@ function addClone(t, mobile){
   b.setDisabled(() => Vars.state.isCampaign());
   
   b.image(Core.atlas.find("test-utils-clone")).size(40).padLeft(-60);
-  if(!mobile) b.label(prov(() => ("Clone"))).padLeft(-8);
+  if(!mobile){
+    b.label(() => b.isDisabled() ? "[gray]Clone[]" : "[white]Clone[]").padLeft(-8);
+  }
   
   var h4 = 0;
   b.clicked(() => {
@@ -264,7 +268,7 @@ function addHeal(t, mobile){
   b.style.checkedOffsetX = offset;
   
   if(!mobile){
-    b.label(prov(() => ("Heal"))).padLeft(0);
+    b.label(() => b.isDisabled() ? "[gray]Heal[]" : "[white]Heal[]").padLeft(0);
   }
   
   b.clicked(() => {
@@ -303,7 +307,7 @@ function addInvincibility(t, mobile){
   b.setDisabled(() => Vars.state.isCampaign());
   
   if(!mobile){
-    b.label(prov(() => ("Invincibility"))).padLeft(0);
+    b.label(() => b.isDisabled() ? "[gray]Invincibility[]" : "[white]Invincibility[]").padLeft(0);
   }
   
   b.clicked(() => {
@@ -358,7 +362,7 @@ function addSandbox(t, mobile){
   b.style.imageUpColor = Color.white;
 
   if(!mobile){
-    b.label(() => Vars.state.rules.infiniteResources ? "Survival" : "Sandbox").padLeft(0);
+    b.label(() => Vars.state.rules.infiniteResources && b.isDisabled() ? "[gray]Survival[]" : Vars.state.rules.infiniteResources && !b.isDisabled() ? "[white]Sandbox[]" : !Vars.state.rules.infiniteResources && b.isDisabled() ? "[gray]Survival[]" : "[white]Sandbox[]").padLeft(0);
   }
 
   b.setDisabled(() => Vars.state.isCampaign() || Vars.net.client());
@@ -390,7 +394,7 @@ function addFillCore(t, mobile){
   b.style.imageUpColor = Color.white;
 
   if(!mobile){
-    b.label(() => fillMode ? "Fill Core" : "Dump Core").padLeft(0);
+    b.label(() => fillMode && b.isDisabled() ? "[gray]Fill Core[]" : fillMode && !b.isDisabled() ? "[white]Fill Core[]" : !fillMode && b.isDisabled() ? "[gray]Dump Core[]" : "[white]Dump Core[]").padLeft(0);
   }
 
   var h5 = 0;
