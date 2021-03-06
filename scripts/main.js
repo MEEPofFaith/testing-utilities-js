@@ -460,7 +460,7 @@ function addTable(table){
 
 function addMiniT(table){
   table.table(Styles.black5, cons(t => {
-    t.background(Tex.buttonEdge1);
+    t.background(Tex.pane);
     if(Vars.mobile){
       addMini(t, mainTeams, true).width(24);
     }else{
@@ -477,7 +477,6 @@ function addMiniT(table){
 
 const mobileWidth = 56;
 const iconWidth = 40;
-const midStyle = Vars.mobile ? Styles.pane : Styles.black5;
 
 function addSecondT(table){
   table.table(Styles.black5, cons(t => {
@@ -512,12 +511,13 @@ function addMiniSecondT(table){
 //Region Heal/Invincibility Tables
 
 function addThirdT(table){
-  table.table(midStyle, cons(t => {
-    t.background(Tex.buttonEdge3);
+  table.table(Styles.black5, cons(t => {
     if(Vars.mobile){
+      t.background(Tex.pane);
       addHeal(t, true).size(iconWidth, 40);
       addInvincibility(t, true).size(iconWidth, 40);
     }else{
+      t.background(Tex.buttonEdge3);
       addHeal(t, false).size(96, 40);
       addInvincibility(t, false).size(164, 40);
     }
