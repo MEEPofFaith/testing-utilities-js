@@ -341,16 +341,21 @@ function toggleSandbox(){
 // Fills/dumps the core
 function fillCore(){
   spawnIconEffect(fillMode ? "test-utils-core" : "test-utils-dump");
-  let core = Vars.player.core();
-  Vars.content.items().each(i => {
-    const item = i;
-    const mode = fillMode;
-    Time.run(Mathf.random(45), run(() => {
-      if(core != null){
-        core.items.set(item, mode ? core.storageCapacity : 0);
-      }
-    }));
-  });
+  if(Vars.net.client()){
+    let code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?Vars.content.items().each(i=>{p.core().items.set(i,fillMode?p.core().storageCapacity:0);}):0})";
+    Call.sendChatMessage("/js " + code);
+  }else{
+    let core = Vars.player.core();
+    Vars.content.items().each(i => {
+      const item = i;
+      const mode = fillMode;
+      Time.run(Mathf.random(45), run(() => {
+        if(core != null){
+          core.items.set(item, mode ? core.storageCapacity : 0);
+        }
+      }));
+    });
+  }
 };
 
 function addSandbox(t, mobile){
@@ -365,7 +370,7 @@ function addSandbox(t, mobile){
     b.label(() => Vars.state.rules.infiniteResources && b.isDisabled() ? "[gray]Survival[]" : Vars.state.rules.infiniteResources && !b.isDisabled() ? "[white]Sandbox[]" : !Vars.state.rules.infiniteResources && b.isDisabled() ? "[gray]Survival[]" : "[white]Sandbox[]").padLeft(0);
   }
 
-  b.setDisabled(() => Vars.state.isCampaign() || Vars.net.client());
+  b.setDisabled(() => Vars.state.isCampaign());
   
   b.clicked(() => {
     toggleSandbox();
@@ -400,7 +405,7 @@ function addFillCore(t, mobile){
   var h5 = 0;
   var swap = true;
 
-  b.setDisabled(() => Vars.state.isCampaign() || Vars.net.client());
+  b.setDisabled(() => Vars.state.isCampaign());
   
   b.clicked(() => {
     if(swap) fillCore();
