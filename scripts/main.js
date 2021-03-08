@@ -626,4 +626,5 @@ if(!Vars.headless){
   
   Vars.renderer.minZoom = 0.667; //Zoom out farther
   Vars.renderer.maxZoom = 24; //Get a closer look at yourself
+  Vars.maxSchematicSize = 1024; //Increase the max schematic size
 }
