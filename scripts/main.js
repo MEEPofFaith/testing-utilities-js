@@ -113,13 +113,15 @@ function addKill(t, mobile){
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
   b.style.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
-  b.style.imageDisabledColor = Color.lightGray;
+  b.style.imageDisabledColor = Color.gray;
   b.style.imageUpColor = Color.white;
   
   var offset = mobile ? 0 : -5;
   b.style.pressedOffsetX = offset;
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
+
+  b.setDisabled(() => Vars.player.unit() == null);
   
   b.image(Core.atlas.find("test-utils-seppuku")).size(40).padLeft(-60);
   if(!mobile){
@@ -172,12 +174,9 @@ function addKill(t, mobile){
     else{
       h3 = 0;
     }
-    b.setColor(curTeam.color);
-    if(!Vars.player.unit().dead && Vars.player.unit().health > 0){
-      if(timers.get(1, 20)){
-        var kIcon = Vars.player.unit().type != null ? new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full)) : Vars.ui.getIcon("cancel");
-        b.style.imageUp = kIcon;
-      }
+    b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+    if(timers.get(2, 20) && !Vars.headless && Vars.player.unit().type != null){
+      b.style.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
     }
   });
   return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
@@ -188,7 +187,7 @@ function addClone(t, mobile){
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
   b.style.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
-  b.style.imageDisabledColor = Color.lightGray;
+  b.style.imageDisabledColor = Color.gray;
   b.style.imageUpColor = Color.white;
   
   var offset = mobile ? 0 : -4;
@@ -196,7 +195,7 @@ function addClone(t, mobile){
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
 
-  b.setDisabled(() => Vars.state.isCampaign());
+  b.setDisabled(() => Vars.state.isCampaign() || Vars.player.unit() == null || Vars.player.unit().type == null);
   
   b.image(Core.atlas.find("test-utils-clone")).size(40).padLeft(-60);
   if(!mobile){
@@ -239,12 +238,9 @@ function addClone(t, mobile){
     else{
       h4 = 0;
     }
-    b.setColor(curTeam.color);
-    if(!Vars.player.unit().dead && Vars.player.unit().health > 0){
-      if(timers.get(3, 20)){
-        var dIcon = Vars.player.unit().type != null ? new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full)) : Vars.ui.getIcon("cancel");
-        b.style.imageUp = dIcon;
-      }
+    b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+    if(timers.get(3, 20) && !Vars.headless && Vars.player.unit().type != null){
+      b.style.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
     }
   });
   return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
@@ -259,13 +255,15 @@ function addHeal(t, mobile){
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
   b.style.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
-  b.style.imageDisabledColor = Color.lightGray;
+  b.style.imageDisabledColor = Color.gray;
   b.style.imageUpColor = Color.white;
   
   var offset = mobile ? 0 : -4;
   b.style.pressedOffsetX = offset;
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
+
+  b.setDisabled(() => Vars.state.isCampaign() || Vars.player.unit() == null || Vars.player.unit().type == null);
   
   if(!mobile){
     b.label(() => b.isDisabled() ? "[gray]Heal[]" : "[white]Heal[]").padLeft(0);
@@ -281,14 +279,20 @@ function addHeal(t, mobile){
       Call.sendChatMessage("/js " + code);
     }else{
       var player = Vars.player;
-      player.unit().dead = false;
-      player.unit().maxHealth = player.unit().type.health;
-      player.unit().health = Vars.player.unit().maxHealth;
-      spawnIconEffect("test-utils-heal");
+      if(player.unit() != null && player.unit().type != null){
+        player.unit().dead = false;
+        player.unit().maxHealth = player.unit().type.health;
+        player.unit().health = player.unit().maxHealth;
+        spawnIconEffect("test-utils-heal");
+      }
     }
   });
+
+  b.update(() =>{
+    b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+  });
   
-  return t.add(b).color(Color.valueOf("84F491")).pad(1).padLeft(0).padRight(0);
+  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
 }
 
 function addInvincibility(t, mobile){
@@ -296,7 +300,7 @@ function addInvincibility(t, mobile){
   b.style.down = Styles.flatDown;
   b.style.over = Styles.flatOver;
   b.style.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
-  b.style.imageDisabledColor = Color.lightGray;
+  b.style.imageDisabledColor = Color.gray;
   b.style.imageUpColor = Color.white;
   
   var offset = mobile ? 0 : -4;
@@ -304,7 +308,7 @@ function addInvincibility(t, mobile){
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
 
-  b.setDisabled(() => Vars.state.isCampaign());
+  b.setDisabled(() => Vars.state.isCampaign() || Vars.player.unit() == null || Vars.player.unit().type == null);
   
   if(!mobile){
     b.label(() => b.isDisabled() ? "[gray]Invincibility[]" : "[white]Invincibility[]").padLeft(0);
@@ -320,14 +324,20 @@ function addInvincibility(t, mobile){
       Call.sendChatMessage("/js " + code);
     }else{
       var player = Vars.player;
-      player.unit().dead = false;
-      player.unit().maxHealth = Number.MAX_VALUE;
-      player.unit().health = Number.MAX_VALUE;
-      spawnIconEffect("test-utils-invincibility");
+      if(player.unit() != null && player.unit().type != null){
+        player.unit().dead = false;
+        player.unit().maxHealth = Number.MAX_VALUE;
+        player.unit().health = Number.MAX_VALUE;
+        spawnIconEffect("test-utils-invincibility");
+      }
     }
   });
+
+  b.update(() =>{
+    b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+  });
   
-  return t.add(b).color(Color.valueOf("F3E979")).pad(1).padLeft(0).padRight(0);
+  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
 }
 
 //EndRegion
@@ -367,7 +377,7 @@ function addSandbox(t, mobile){
   b.style.imageUpColor = Color.white;
 
   if(!mobile){
-    b.label(() => Vars.state.rules.infiniteResources && b.isDisabled() ? "[gray]Survival[]" : Vars.state.rules.infiniteResources && !b.isDisabled() ? "[white]Sandbox[]" : !Vars.state.rules.infiniteResources && b.isDisabled() ? "[gray]Survival[]" : "[white]Sandbox[]").padLeft(0);
+    b.label(() => Vars.state.rules.infiniteResources && b.isDisabled() ? "[gray]Survival[]" : Vars.state.rules.infiniteResources && !b.isDisabled() ? "[white]Survival[]" : !Vars.state.rules.infiniteResources && b.isDisabled() ? "[gray]Sandbox[]" : "[white]Sandbox[]").padLeft(0);
   }
 
   b.setDisabled(() => Vars.state.isCampaign());
@@ -383,8 +393,10 @@ function addSandbox(t, mobile){
     b.style.unpressedOffsetX = offset;
     b.style.checkedOffsetX = offset;
 
-    b.replaceImage(new Image(Vars.state.rules.infiniteResources ? Core.atlas.find("test-utils-survival") : Core.atlas.find("test-utils-sandbox")).setScaling(Scaling.bounded));
-    b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+    if(!Vars.headless){
+      b.replaceImage(new Image(Vars.state.rules.infiniteResources ? Core.atlas.find("test-utils-survival") : Core.atlas.find("test-utils-sandbox")).setScaling(Scaling.bounded));
+      b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+    }
   });
 
   return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
@@ -429,8 +441,10 @@ function addFillCore(t, mobile){
     b.style.unpressedOffsetX = offset;
     b.style.checkedOffsetX = offset;
 
-    b.replaceImage(new Image(fillMode ? Core.atlas.find("test-utils-core") : Core.atlas.find("test-utils-dump")).setScaling(Scaling.bounded));
-    b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+    if(!Vars.headless){
+      b.replaceImage(new Image(fillMode ? Core.atlas.find("test-utils-core") : Core.atlas.find("test-utils-dump")).setScaling(Scaling.bounded));
+      b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+    }
   });
   
   return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
