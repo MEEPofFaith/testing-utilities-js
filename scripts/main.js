@@ -121,7 +121,7 @@ function addKill(t, mobile){
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
 
-  b.setDisabled(() => Vars.player.unit() == null);
+  b.setDisabled(() => !Vars.player.unit());
   
   b.image(Core.atlas.find("test-utils-seppuku")).size(40).padLeft(-60);
   if(!mobile){
@@ -195,7 +195,7 @@ function addClone(t, mobile){
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
 
-  b.setDisabled(() => Vars.state.isCampaign() || Vars.player.unit() == null || Vars.player.unit().type == null);
+  b.setDisabled(() => Vars.state.isCampaign() || !Vars.player.unit() || !Vars.player.unit().type);
   
   b.image(Core.atlas.find("test-utils-clone")).size(40).padLeft(-60);
   if(!mobile){
@@ -263,7 +263,7 @@ function addHeal(t, mobile){
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
 
-  b.setDisabled(() => Vars.state.isCampaign() || Vars.player.unit() == null || Vars.player.unit().type == null);
+  b.setDisabled(() => Vars.state.isCampaign() || !Vars.player.unit() || !Vars.player.unit().type);
   
   if(!mobile){
     b.label(() => b.isDisabled() ? "[gray]Heal[]" : "[white]Heal[]").padLeft(0);
@@ -308,7 +308,7 @@ function addInvincibility(t, mobile){
   b.style.unpressedOffsetX = offset;
   b.style.checkedOffsetX = offset;
 
-  b.setDisabled(() => Vars.state.isCampaign() || Vars.player.unit() == null || Vars.player.unit().type == null);
+  b.setDisabled(() => Vars.state.isCampaign() || !Vars.player.unit() || !Vars.player.unit().type);
   
   if(!mobile){
     b.label(() => b.isDisabled() ? "[gray]Invincibility[]" : "[white]Invincibility[]").padLeft(0);
