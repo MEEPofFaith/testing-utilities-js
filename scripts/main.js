@@ -345,6 +345,10 @@ function addInvincibility(t, mobile){
 
 function toggleSandbox(){
   spawnIconEffect(Vars.state.rules.infiniteResources ? "test-utils-survival" : "test-utils-sandbox");
+  if(Vars.net.client()){
+    let code = "Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources";
+    Call.sendChatMessage("/js " + code);
+  }
   Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources;
 };
 
@@ -352,7 +356,12 @@ function toggleSandbox(){
 function fillCore(){
   spawnIconEffect(fillMode ? "test-utils-core" : "test-utils-dump");
   if(Vars.net.client()){
-    let code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?Vars.content.items().each(i=>{p.core().items.set(i,fillMode?p.core().storageCapacity:0);}):0})";
+    let code;
+    if(fillMode){
+      code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?Vars.content.items().each(i=>{p.core().items.set(i,1000000);}):0})";
+    }else if(!fillMode){
+      code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?Vars.content.items().each(i=>{p.core().items.set(i,0);}):0})";
+    }
     Call.sendChatMessage("/js " + code);
   }else{
     let core = Vars.player.core();
