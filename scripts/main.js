@@ -623,10 +623,12 @@ if(!Vars.headless){
     Vars.ui.hudGroup.addChild(mtt);
     Vars.ui.hudGroup.addChild(fot);
     Vars.ui.hudGroup.addChild(mfot);
+
+    Vars.ui.settings.game.checkPref("startfolded", Core.settings.getBool("startfolded", false)); //Make it a setting
   });
   
   Events.on(WorldLoadEvent, () => {
-    folded = false;
+    folded = Core.settings.getBool("startfolded");
     fillMode = true;
     curTeam = Vars.player.team();
     mode = teams.indexOf(curTeam);
