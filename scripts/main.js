@@ -138,15 +138,17 @@ function addKill(t, mobile){
     }else{
       let u = Vars.player.unit();
       let type = u.type;
-      if(type != null){
-        Effect.shake(type.hitSize / 1.5, Mathf.pow(type.hitSize, 3.5), u);
-        Fx.dynamicExplosion.at(u.x, u.y, type.hitSize / 5);
-      }
       u.kill();
-      u.elevation = 0;
-      u.health = -1;
-      u.dead = true;
-      u.destroy(); // I n s t a n t l y    d i e
+      if(Core.settings.getBool("instakill")){ // I n s t a n t l y    d i e
+        if(type != null){
+          Effect.shake(type.hitSize, type.hitSize, u);
+          Fx.dynamicExplosion.at(u.x, u.y, type.hitSize / 5);
+        }
+        u.elevation = 0;
+        u.health = -1;
+        u.dead = true;
+        u.destroy();
+      }
     }
   });
   
@@ -160,15 +162,17 @@ function addKill(t, mobile){
         }else if(Vars.player.unit() != null){
           let u = Vars.player.unit();
           let type = u.type;
-          if(type != null){
-            Effect.shake(type.hitSize / 1.5, Mathf.pow(type.hitSize, 3.5), u);
-            Fx.dynamicExplosion.at(u.x, u.y, type.hitSize / 5);
-          }
           u.kill();
-          u.elevation = 0;
-          u.health = -1;
-          u.dead = true;
-          u.destroy(); // I n s t a n t l y    d i e
+          if(Core.settings.getBool("instakill")){ // I n s t a n t l y    d i e
+            if(type != null){
+              Effect.shake(type.hitSize, type.hitSize, u);
+              Fx.dynamicExplosion.at(u.x, u.y, type.hitSize / 5);
+            }
+            u.elevation = 0;
+            u.health = -1;
+            u.dead = true;
+            u.destroy();
+          }
         }
       }
     }
@@ -645,7 +649,9 @@ if(!Vars.headless){
     Vars.ui.hudGroup.addChild(fot);
     Vars.ui.hudGroup.addChild(mfot);
 
-    Vars.ui.settings.game.checkPref("startfolded", Core.settings.getBool("startfolded", false)); //Make it a setting
+    //Settings
+    Vars.ui.settings.game.checkPref("startfolded", Core.settings.getBool("startfolded", false)); //Start Folded
+    Vars.ui.settings.game.checkPref("instakill", Core.settings.getBool("instakill", true)); //Instakill
   });
   
   Events.on(WorldLoadEvent, () => {
