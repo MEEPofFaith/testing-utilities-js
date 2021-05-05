@@ -503,8 +503,7 @@ function check(){
 
 //Region Folder
 
-let i = Vars.control.input;
-let schem = () => i.lastSchematic != null && !i.selectRequests.isEmpty();
+let schem = () => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
 
 function folder(table){
   let a = table.table(Styles.black5, cons(t => {
@@ -517,9 +516,9 @@ function folder(table){
     !Vars.ui.minimapfrag.shown() &&
     (Vars.mobile ?
       !(Vars.player.unit().isBuilding() ||
-      i.block != null ||
-      i.mode == PlaceMode.breaking ||
-      !i.selectRequests.isEmpty() &&
+      Vars.control.input.block != null ||
+      Vars.control.input.mode == PlaceMode.breaking ||
+      !Vars.control.input.selectRequests.isEmpty() &&
       schem.get()) :
     true
   );
@@ -536,9 +535,9 @@ function folderFolded(table){
     !Vars.ui.minimapfrag.shown() &&
     (Vars.mobile ?
       !(Vars.player.unit().isBuilding() ||
-      i.block != null ||
-      i.mode == PlaceMode.breaking ||
-      !i.selectRequests.isEmpty() &&
+      Vars.control.input.block != null ||
+      Vars.control.input.mode == PlaceMode.breaking ||
+      !Vars.control.input.selectRequests.isEmpty() &&
       schem.get()) :
     true
   );
@@ -567,9 +566,9 @@ function addTable(table){
     !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
     (Vars.mobile ?
       !(Vars.player.unit().isBuilding() ||
-      i.block != null ||
-      i.mode == PlaceMode.breaking ||
-      !i.selectRequests.isEmpty() &&
+      Vars.control.input.block != null ||
+      Vars.control.input.mode == PlaceMode.breaking ||
+      !Vars.control.input.selectRequests.isEmpty() &&
       schem.get()) :
     true
   );
@@ -591,9 +590,9 @@ function addMiniT(table){
     !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
     (Vars.mobile ?
       !(Vars.player.unit().isBuilding() ||
-      i.block != null ||
-      i.mode == PlaceMode.breaking ||
-      !i.selectRequests.isEmpty() &&
+      Vars.control.input.block != null ||
+      Vars.control.input.mode == PlaceMode.breaking ||
+      !Vars.control.input.selectRequests.isEmpty() &&
       schem.get()) :
     true
   );
@@ -624,9 +623,9 @@ function addSecondT(table){
     !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
     (Vars.mobile ?
       !(Vars.player.unit().isBuilding() ||
-      i.block != null ||
-      i.mode == PlaceMode.breaking ||
-      !i.selectRequests.isEmpty() &&
+      Vars.control.input.block != null ||
+      Vars.control.input.mode == PlaceMode.breaking ||
+      !Vars.control.input.selectRequests.isEmpty() &&
       schem.get()) :
     true
   );
@@ -647,9 +646,9 @@ function addMiniSecondT(table){
     !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
     (Vars.mobile ?
       !(Vars.player.unit().isBuilding() ||
-      i.block != null ||
-      i.mode == PlaceMode.breaking ||
-      !i.selectRequests.isEmpty() &&
+      Vars.control.input.block != null ||
+      Vars.control.input.mode == PlaceMode.breaking ||
+      !Vars.control.input.selectRequests.isEmpty() &&
       schem.get()) :
     true
   );
@@ -677,9 +676,9 @@ function addThirdT(table){
     //!(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
     (Vars.mobile ?
       !(Vars.player.unit().isBuilding() ||
-      i.block != null ||
-      i.mode == PlaceMode.breaking ||
-      !i.selectRequests.isEmpty() &&
+      Vars.control.input.block != null ||
+      Vars.control.input.mode == PlaceMode.breaking ||
+      !Vars.control.input.selectRequests.isEmpty() &&
       schem.get()) :
     true
   );
@@ -698,9 +697,9 @@ function addMiniThirdT(table){
     //!(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
     (Vars.mobile ?
       !(Vars.player.unit().isBuilding() ||
-      i.block != null ||
-      i.mode == PlaceMode.breaking ||
-      !i.selectRequests.isEmpty() &&
+      Vars.control.input.block != null ||
+      Vars.control.input.mode == PlaceMode.breaking ||
+      !Vars.control.input.selectRequests.isEmpty() &&
       schem.get()) :
     true
   );
@@ -726,9 +725,9 @@ function addFourthT(table){
     !Vars.ui.minimapfrag.shown() &&
     (Vars.mobile ?
       !(Vars.player.unit().isBuilding() ||
-      i.block != null ||
-      i.mode == PlaceMode.breaking ||
-      !i.selectRequests.isEmpty() &&
+      Vars.control.input.block != null ||
+      Vars.control.input.mode == PlaceMode.breaking ||
+      !Vars.control.input.selectRequests.isEmpty() &&
       schem.get()) :
     true
   );
@@ -746,9 +745,9 @@ function addMiniFourthdT(table){
     !Vars.ui.minimapfrag.shown() &&
     (Vars.mobile ?
       !(Vars.player.unit().isBuilding() ||
-      i.block != null ||
-      i.mode == PlaceMode.breaking ||
-      !i.selectRequests.isEmpty() &&
+      Vars.control.input.block != null ||
+      Vars.control.input.mode == PlaceMode.breaking ||
+      !Vars.control.input.selectRequests.isEmpty() &&
       schem.get()) :
     true
   );
