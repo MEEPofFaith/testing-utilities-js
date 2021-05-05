@@ -522,23 +522,14 @@ function folder(table){
   })).padBottom(TCOffset).padLeft(Vars.mobile ? 164 : 480);
   table.fillParent = true;
   table.visibility = () => {
-    print("1");
     if(folded) return false;
-    print("2");
     if(!Vars.ui.hudfrag.shown) return false;
-    print("3");
     if(Vars.ui.minimapfrag.shown()) return false;
-    print("4");
     if(!Vars.mobile) return true;
-    print("5");
     if(Vars.player.unit().isBuilding()) return false;
-    print("6");
     if(Vars.control.input.block != null) return false;
-    print("7");
     if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    print("8");
     if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
-    print("9");
     return true;
   };
 }
