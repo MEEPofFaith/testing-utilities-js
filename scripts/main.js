@@ -45,7 +45,11 @@ function changeTeam(){
 
 function addSingle(t, team, num, mobile){
   let b = new Button(Styles.logict);
-  let h = 0;
+  let bs = b.style;
+  bs.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
+  
+  b.setDisabled(() => Vars.state.isCampaign());
+
   if(mobile){
     b.label(() => (abbreList[teams.indexOf(team)]));
   }else{
@@ -53,29 +57,20 @@ function addSingle(t, team, num, mobile){
   }
   
   b.clicked(() => {
-    if(h > longPress) return;
     mode = num;
     curTeam = team;
     changeTeam();
-  });
-  
-  b.update(() => {
-    if(b.isPressed()){
-      h += Core.graphics.getDeltaTime() * 60;
-      if(h > longPress){
-        folded = true;
-      }
-    }
-    else{
-      h = 0;
-    }
   });
   return t.add(b).size(40, 40).color(team.color).pad(1);
 }
 
 function addMini(t, teamList, mobile){
   let b = new Button(Styles.logict);
-  let h2 = 0;
+  let bs = b.style;
+  bs.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
+  
+  b.setDisabled(() => Vars.state.isCampaign());
+
   if(mobile){
     b.label(() => (abbreList[teams.indexOf(curTeam)]));
   }else{
@@ -83,7 +78,6 @@ function addMini(t, teamList, mobile){
   }
   
   b.clicked(() => {
-    if(h2 > longPress) return;
     do{
       mode++;
       if(mode > teamList[teamList.length - 1]) mode = teamList[0];
@@ -93,16 +87,24 @@ function addMini(t, teamList, mobile){
   });
   
   b.update(() => {
-    if(b.isPressed()){
-      h2 += Core.graphics.getDeltaTime() * 60;
-      if(h2 > longPress) folded = false;
-    }
-    else{
-      h2 = 0;
-    }
     b.setColor(curTeam.color);
   });
   return t.add(b).size(40, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+}
+
+function folding(t){
+  let b = new ImageButton(Icon.resize, Styles.logici);
+  let bs = b.style;
+  bs.down = Styles.flatDown;
+  bs.over = Styles.flatOver;
+  bs.imageDisabledColor = Color.gray;
+  bs.imageUpColor = Color.white;
+
+  b.clicked(() => {
+    folded = !folded;
+  });
+
+  return t.add(b).size(40, 40).pad(1).padLeft(0).padRight(0);
 }
 
 //Endregion
@@ -485,13 +487,33 @@ function check(){
   });
 }
 
+//Region Folder
+
+function folder(table){
+  let a = table.table(Styles.black5, cons(t => {
+    t.background(Tex.buttonEdge3);
+    folding(t);
+  })).padBottom(TCOffset).padLeft(Vars.mobile ? 124 : 492);
+  table.fillParent = true;
+  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
+}
+
+function folderFolded(table){
+  let a = table.table(Styles.black5, cons(t => {
+    t.background(Tex.buttonEdge3);
+    folding(t);
+  })).padBottom(TCOffset).padLeft(Vars.mobile ? 124 : 352);
+  table.fillParent = true;
+  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
+}
+
 //Region Team Changer Tables
 
 let schem = Prov(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
 
 function addTable(table){
   table.table(Styles.black5, cons(t => {
-    t.background(Tex.buttonEdge3);
+    t.background(Tex.pane);
     if(Vars.mobile){
       for(let i = 0; i < teams.length; i++){
         addSingle(t, teams[i], i, true).width(24);
@@ -545,7 +567,7 @@ function addMiniSecondT(table){
   let healWidth = iconWidth * 2 + 20
   let xOff = healWidth + (Vars.mobile ? 44 : 120);
   table.table(Styles.black5, cons(t => {
-    t.background(Tex.buttonEdge3);
+    t.background(Tex.pane);
     addClone(t, true).size(mobileWidth, 40);
     addKill(t, true).size(mobileWidth, 40);
   })).padBottom(TCOffset).padLeft(xOff);
@@ -613,7 +635,13 @@ function addMiniFourthdT(table){
 //EndRegion
 //Region Add Tables
 
-if(!Vars.headless){
+function set(t){
+  Vars.ui.hudGroup.addChild(t);
+}
+
+if(!Vars.headless){ //Now this is what I call inefficient hell.
+  let ff = new Table();
+  let fff = new Table();
   let ft = new Table();
   let mft = new Table();
   let st = new Table();
@@ -624,6 +652,8 @@ if(!Vars.headless){
   let mfot = new Table();
   
   Events.on(ClientLoadEvent, () => {
+    ff.bottom().left();
+    fff.bottom().left();
     ft.bottom().left();
     mft.bottom().left();
     st.bottom().left();
@@ -632,6 +662,9 @@ if(!Vars.headless){
     mtt.bottom().left();
     fot.bottom().left();
     mfot.bottom().left();
+
+    folder(ff);
+    folderFolded(fff);
     addTable(ft);
     addSecondT(mft);
     addMiniT(st);
@@ -640,14 +673,17 @@ if(!Vars.headless){
     addMiniThirdT(mtt);
     addFourthT(fot);
     addMiniFourthdT(mfot);
-    Vars.ui.hudGroup.addChild(ft);
-    Vars.ui.hudGroup.addChild(mft);  
-    Vars.ui.hudGroup.addChild(st);
-    Vars.ui.hudGroup.addChild(mst); 
-    Vars.ui.hudGroup.addChild(tt);
-    Vars.ui.hudGroup.addChild(mtt);
-    Vars.ui.hudGroup.addChild(fot);
-    Vars.ui.hudGroup.addChild(mfot);
+
+    set(ff);
+    set(fff);
+    set(ft);
+    set(mft);  
+    set(st);
+    set(mst); 
+    set(tt);
+    set(mtt);
+    set(fot);
+    set(mfot);
 
     //Settings
     Vars.ui.settings.game.checkPref("startfolded", Core.settings.getBool("startfolded", false)); //Start Folded

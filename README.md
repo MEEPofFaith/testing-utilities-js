@@ -1,7 +1,7 @@
 # Testing Utilities
 Just some small utilities for sandbox/modding
 
-- Team Changer: Change teams easilty. Hold to collapse/expand
+- Team Changer: Change teams easilty.
 - Seppuku Button: Instantly kill yourself. Press and hold to commit crawler.
 - Clone Button: Instantly clones your player unit. Press and hold to mass clone. (Disabled in campaign)
 - Heal Button: Sets your player unit's hp to its max.
