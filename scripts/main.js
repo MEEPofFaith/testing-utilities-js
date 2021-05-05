@@ -6,8 +6,8 @@ const abbreList = ["[#4d4e58]D[]", "[accent]S[]", "[#f25555]C[]", "[#54d67d]G[]"
 let mode = 1;
 let curTeam = Team.sharded;
 const timers = new Interval(4);
-let buttonHeight = 64;
-let TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? buttonHeight : 0;
+let buttonHeight = 60;
+let TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? 62 : 0;
 
 let folded = false;
 let fillMode = true;
@@ -66,7 +66,7 @@ function addSingle(t, team, num, mobile){
     b.setColor(b.isDisabled() ? Color.white : team.color);
   });
 
-  return t.add(b).size(40, 40).color(team.color).pad(1);
+  return t.add(b).size(40, 40).color(team.color).pad(0);
 }
 
 function addMini(t, teamList, mobile){
@@ -94,7 +94,8 @@ function addMini(t, teamList, mobile){
   b.update(() => {
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
   });
-  return t.add(b).size(40, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
+
+  return t.add(b).size(40, 40).color(curTeam.color).pad(0).left();
 }
 
 function folding(t){
@@ -109,7 +110,7 @@ function folding(t){
     folded = !folded;
   });
 
-  return t.add(b).size(40, 40).pad(1).padLeft(0).padRight(0).left();
+  return t.add(b).size(40, 40).pad(0).left();
 }
 
 //Endregion
@@ -193,7 +194,8 @@ function addKill(t, mobile){
       bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
     }
   });
-  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
+
+  return t.add(b).color(curTeam.color).pad(0).left();
 }
 
 function addClone(t, mobile){
@@ -262,7 +264,8 @@ function addClone(t, mobile){
       bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
     }
   });
-  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
+  
+  return t.add(b).color(curTeam.color).pad(0).left();
 }
 
 
@@ -314,7 +317,7 @@ function addHeal(t, mobile){
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
   });
   
-  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
+  return t.add(b).color(curTeam.color).pad(0).left();
 }
 
 function addInvincibility(t, mobile){
@@ -362,7 +365,7 @@ function addInvincibility(t, mobile){
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
   });
   
-  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
+  return t.add(b).color(curTeam.color).pad(0).left();
 }
 
 //EndRegion
@@ -400,10 +403,6 @@ function fillCore(){
       }
     });
   }
-
-  b.update(() =>{
-    b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
-  });
 };
 
 function addSandbox(t, mobile){
@@ -440,7 +439,7 @@ function addSandbox(t, mobile){
     }
   });
 
-  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
+  return t.add(b).color(curTeam.color).pad(0).left();
 }
 
 function addFillCore(t, mobile){
@@ -489,7 +488,7 @@ function addFillCore(t, mobile){
     }
   });
   
-  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
+  return t.add(b).color(curTeam.color).pad(0).left();
 }
 
 //EndRegion
@@ -511,7 +510,7 @@ function folder(table){
   let a = table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     folding(t);
-  })).padBottom(TCOffset).padLeft(Vars.mobile ? 172 : 492);
+  })).padBottom(TCOffset).padLeft(Vars.mobile ? 172 : 480);
   table.fillParent = true;
   table.visibility = () => !folded &&
     Vars.ui.hudfrag.shown &&
