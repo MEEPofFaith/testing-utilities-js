@@ -16,5 +16,5 @@ description:
   Also increases zooming range.
   '''
 version: 0.13
-minGameVersion: 125.1
+minGameVersion: 126.2
 hidden: true

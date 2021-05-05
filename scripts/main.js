@@ -1,6 +1,6 @@
 const teams = [Team.derelict, Team.sharded, Team.crux, Team.green, Team.purple, Team.blue];
 const teamNames = ["Team.derelict", "Team.sharded", "Team.crux", "Team.green", "Team.purple", "Team.blue"];
-const mainTeams = [1, 2];
+const mainTeams = [0, 1, 2];
 const titleList = ["[#4d4e58]Derelict[]", "[accent]Sharded[]", "[#f25555]Crux[]", "[#54d67d]Green[]", "[#995bb0]Purple[]", "[#5a4deb]Blue[]"];
 const abbreList = ["[#4d4e58]D[]", "[accent]S[]", "[#f25555]C[]", "[#54d67d]G[]", "[#995bb0]P[]", "[#5a4deb]B[]"];
 let mode = 1;
@@ -61,6 +61,11 @@ function addSingle(t, team, num, mobile){
     curTeam = team;
     changeTeam();
   });
+  
+  b.update(() => {
+    b.setColor(b.isDisabled() ? Color.white : team.color);
+  });
+
   return t.add(b).size(40, 40).color(team.color).pad(1);
 }
 
@@ -87,9 +92,9 @@ function addMini(t, teamList, mobile){
   });
   
   b.update(() => {
-    b.setColor(curTeam.color);
+    b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
   });
-  return t.add(b).size(40, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+  return t.add(b).size(40, 40).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
 }
 
 function folding(t){
@@ -104,7 +109,7 @@ function folding(t){
     folded = !folded;
   });
 
-  return t.add(b).size(40, 40).pad(1).padLeft(0).padRight(0);
+  return t.add(b).size(40, 40).pad(1).padLeft(0).padRight(0).left();
 }
 
 //Endregion
@@ -181,12 +186,14 @@ function addKill(t, mobile){
     else{
       h3 = 0;
     }
-    b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
-    if(timers.get(2, 20) && !Vars.headless && Vars.player.unit().type != null){
+
+    b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+
+    if(timers.get(2, 20) && !Vars.headless && Vars.player.unit().type != null){ //Slight delat to reduce lag
       bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
     }
   });
-  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
 }
 
 function addClone(t, mobile){
@@ -248,12 +255,14 @@ function addClone(t, mobile){
     else{
       h4 = 0;
     }
-    b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
-    if(timers.get(3, 20) && !Vars.headless && Vars.player.unit().type != null){
+
+    b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+
+    if(timers.get(3, 20) && !Vars.headless && Vars.player.unit().type != null){ //Slight delay to reduce lag
       bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
     }
   });
-  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
 }
 
 
@@ -302,10 +311,10 @@ function addHeal(t, mobile){
   });
 
   b.update(() =>{
-    b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+    b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
   });
   
-  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
 }
 
 function addInvincibility(t, mobile){
@@ -350,10 +359,10 @@ function addInvincibility(t, mobile){
   });
 
   b.update(() =>{
-    b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+    b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
   });
   
-  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
 }
 
 //EndRegion
@@ -391,6 +400,10 @@ function fillCore(){
       }
     });
   }
+
+  b.update(() =>{
+    b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+  });
 };
 
 function addSandbox(t, mobile){
@@ -419,13 +432,15 @@ function addSandbox(t, mobile){
     bs.unpressedOffsetX = offset;
     bs.checkedOffsetX = offset;
 
+    b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
+
     if(!Vars.headless){
       b.replaceImage(new Image(Vars.state.rules.infiniteResources ? Core.atlas.find("test-utils-survival") : Core.atlas.find("test-utils-sandbox")).setScaling(Scaling.bounded));
       b.setColor(Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
     }
   });
 
-  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
 }
 
 function addFillCore(t, mobile){
@@ -474,7 +489,7 @@ function addFillCore(t, mobile){
     }
   });
   
-  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0);
+  return t.add(b).color(curTeam.color).pad(1).padLeft(0).padRight(0).left();
 }
 
 //EndRegion
@@ -489,27 +504,48 @@ function check(){
 
 //Region Folder
 
+let i = Vars.control.input;
+let schem = () => i.lastSchematic != null && !i.selectRequests.isEmpty();
+
 function folder(table){
   let a = table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     folding(t);
-  })).padBottom(TCOffset).padLeft(Vars.mobile ? 124 : 492);
+  })).padBottom(TCOffset).padLeft(Vars.mobile ? 172 : 492);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
+  table.visibility = () => !folded &&
+    Vars.ui.hudfrag.shown &&
+    !Vars.ui.minimapfrag.shown() &&
+    (Vars.mobile ?
+      !(Vars.player.unit().isBuilding() ||
+      i.block != null ||
+      i.mode == PlaceMode.breaking ||
+      !i.selectRequests.isEmpty() &&
+      schem.get()) :
+    true
+  );
 }
 
 function folderFolded(table){
   let a = table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     folding(t);
-  })).padBottom(TCOffset).padLeft(Vars.mobile ? 124 : 352);
+  })).padBottom(TCOffset).padLeft(Vars.mobile ? 160 : 352);
   table.fillParent = true;
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
+  table.visibility = () => folded &&
+    Vars.ui.hudfrag.shown &&
+    !Vars.ui.minimapfrag.shown() &&
+    (Vars.mobile ?
+      !(Vars.player.unit().isBuilding() ||
+      i.block != null ||
+      i.mode == PlaceMode.breaking ||
+      !i.selectRequests.isEmpty() &&
+      schem.get()) :
+    true
+  );
 }
 
 //Region Team Changer Tables
-
-let schem = Prov(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
 
 function addTable(table){
   table.table(Styles.black5, cons(t => {
@@ -526,7 +562,18 @@ function addTable(table){
     }
   })).padBottom(TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
+  table.visibility = () => !folded &&
+    Vars.ui.hudfrag.shown &&
+    !Vars.ui.minimapfrag.shown() &&
+    !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
+    (Vars.mobile ?
+      !(Vars.player.unit().isBuilding() ||
+      i.block != null ||
+      i.mode == PlaceMode.breaking ||
+      !i.selectRequests.isEmpty() &&
+      schem.get()) :
+    true
+  );
 }
 
 function addMiniT(table){
@@ -539,7 +586,18 @@ function addMiniT(table){
     }
   })).padBottom(TCOffset);
   table.fillParent = true;
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
+  table.visibility = () => folded &&
+    Vars.ui.hudfrag.shown &&
+    !Vars.ui.minimapfrag.shown() &&
+    !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
+    (Vars.mobile ?
+      !(Vars.player.unit().isBuilding() ||
+      i.block != null ||
+      i.mode == PlaceMode.breaking ||
+      !i.selectRequests.isEmpty() &&
+      schem.get()) :
+    true
+  );
 }
 
 //EndRegion
@@ -560,7 +618,19 @@ function addSecondT(table){
     }
   })).padBottom((Vars.mobile ? buttonHeight : 3 * buttonHeight) + TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
+  table.fillParent = true;
+  table.visibility = () => !folded &&
+    Vars.ui.hudfrag.shown &&
+    !Vars.ui.minimapfrag.shown() &&
+    !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
+    (Vars.mobile ?
+      !(Vars.player.unit().isBuilding() ||
+      i.block != null ||
+      i.mode == PlaceMode.breaking ||
+      !i.selectRequests.isEmpty() &&
+      schem.get()) :
+    true
+  );
 }
 
 function addMiniSecondT(table){
@@ -572,7 +642,18 @@ function addMiniSecondT(table){
     addKill(t, true).size(mobileWidth, 40);
   })).padBottom(TCOffset).padLeft(xOff);
   table.fillParent = true;
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
+  table.visibility = () => folded &&
+    Vars.ui.hudfrag.shown &&
+    !Vars.ui.minimapfrag.shown() &&
+    !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
+    (Vars.mobile ?
+      !(Vars.player.unit().isBuilding() ||
+      i.block != null ||
+      i.mode == PlaceMode.breaking ||
+      !i.selectRequests.isEmpty() &&
+      schem.get()) :
+    true
+  );
 }
 
 //EndRegion
@@ -591,7 +672,18 @@ function addThirdT(table){
     }
   })).padBottom((Vars.mobile ? 2 * buttonHeight : 2 * buttonHeight) + TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
+  table.visibility = () => !folded &&
+    Vars.ui.hudfrag.shown &&
+    !Vars.ui.minimapfrag.shown() &&
+    //!(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
+    (Vars.mobile ?
+      !(Vars.player.unit().isBuilding() ||
+      i.block != null ||
+      i.mode == PlaceMode.breaking ||
+      !i.selectRequests.isEmpty() &&
+      schem.get()) :
+    true
+  );
 }
 
 function addMiniThirdT(table){
@@ -601,7 +693,18 @@ function addMiniThirdT(table){
     addInvincibility(t, true).size(iconWidth, 40);
   })).padBottom(TCOffset).padLeft(Vars.mobile ? 44 : 120);
   table.fillParent = true;
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
+  table.visibility = () => folded &&
+    Vars.ui.hudfrag.shown &&
+    !Vars.ui.minimapfrag.shown() &&
+    //!(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
+    (Vars.mobile ?
+      !(Vars.player.unit().isBuilding() ||
+      i.block != null ||
+      i.mode == PlaceMode.breaking ||
+      !i.selectRequests.isEmpty() &&
+      schem.get()) :
+    true
+  );
 }
 
 //EndRegion
@@ -619,7 +722,17 @@ function addFourthT(table){
     }
   })).padBottom((Vars.mobile ? 3 * buttonHeight : buttonHeight) + TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
+  table.visibility = () => !folded &&
+    Vars.ui.hudfrag.shown &&
+    !Vars.ui.minimapfrag.shown() &&
+    (Vars.mobile ?
+      !(Vars.player.unit().isBuilding() ||
+      i.block != null ||
+      i.mode == PlaceMode.breaking ||
+      !i.selectRequests.isEmpty() &&
+      schem.get()) :
+    true
+  );
 }
 
 function addMiniFourthdT(table){
@@ -629,7 +742,17 @@ function addMiniFourthdT(table){
     addFillCore(t, true).size(iconWidth, 40);
   })).padBottom(buttonHeight + TCOffset)
   table.fillParent = true;
-  table.visibility = () => folded && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown() && !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) && (Vars.mobile ? !(Vars.player.unit().isBuilding() || Vars.control.input.block != null || Vars.control.input.mode == PlaceMode.breaking || !Vars.control.input.selectRequests.isEmpty() && !schem.get()) : true);
+  table.visibility = () => folded &&
+    Vars.ui.hudfrag.shown &&
+    !Vars.ui.minimapfrag.shown() &&
+    (Vars.mobile ?
+      !(Vars.player.unit().isBuilding() ||
+      i.block != null ||
+      i.mode == PlaceMode.breaking ||
+      !i.selectRequests.isEmpty() &&
+      schem.get()) :
+    true
+  );
 }
 
 //EndRegion
