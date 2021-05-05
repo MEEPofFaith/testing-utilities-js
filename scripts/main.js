@@ -48,7 +48,7 @@ function addSingle(t, team, num, mobile){
   let bs = b.style;
   bs.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
   
-  b.setDisabled(() => Vars.state.isCampaign());
+  b.setDisabled(() => Vars.state.isCampaign() || Vars.player.unit().type == UnitTypes.block);
 
   if(mobile){
     b.label(() => (abbreList[teams.indexOf(team)]));
@@ -74,7 +74,7 @@ function addMini(t, teamList, mobile){
   let bs = b.style;
   bs.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
   
-  b.setDisabled(() => Vars.state.isCampaign());
+  b.setDisabled(() => Vars.state.isCampaign() || Vars.player.unit().type == UnitTypes.block);
 
   if(mobile){
     b.label(() => (abbreList[teams.indexOf(curTeam)]));
@@ -118,6 +118,7 @@ function folding(t){
 
 function addKill(t, mobile){
   let b = new ImageButton(new TextureRegionDrawable(UnitTypes.gamma.icon(Cicon.full)), Styles.logici);
+  b.getImage().setScaling(Scaling.fit);
   let bs = b.style;
   bs.down = Styles.flatDown;
   bs.over = Styles.flatOver;
@@ -130,7 +131,7 @@ function addKill(t, mobile){
   bs.unpressedOffsetX = offset;
   bs.checkedOffsetX = offset;
 
-  b.setDisabled(() => !Vars.player.unit());
+  b.setDisabled(() => !Vars.player.unit() || Vars.player.unit().type == UnitTypes.block);
   
   b.image(Core.atlas.find("test-utils-seppuku")).size(40).padLeft(-60);
   if(!mobile){
@@ -190,8 +191,12 @@ function addKill(t, mobile){
 
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
 
-    if(timers.get(2, 20) && !Vars.headless && Vars.player.unit().type != null){ //Slight delat to reduce lag
-      bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
+    if(!Vars.headless && Vars.player.unit().type != null && timers.get(3, 20)){ //Slight delay to reduce lag
+      if(Vars.player.unit().type == UnitTypes.block){
+        bs.imageUp = new TextureRegionDrawable(Icon.cancel);
+      }else{
+        bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
+      }
     }
   });
 
@@ -200,6 +205,7 @@ function addKill(t, mobile){
 
 function addClone(t, mobile){
   let b = new ImageButton(Vars.ui.getIcon("units", "copy"), Styles.logici);
+  b.getImage().setScaling(Scaling.fit);
   let bs = b.style;
   bs.down = Styles.flatDown;
   bs.over = Styles.flatOver;
@@ -212,7 +218,7 @@ function addClone(t, mobile){
   bs.unpressedOffsetX = offset;
   bs.checkedOffsetX = offset;
 
-  b.setDisabled(() => Vars.state.isCampaign() || !Vars.player.unit() || !Vars.player.unit().type);
+  b.setDisabled(() => Vars.state.isCampaign() || !Vars.player.unit() || !Vars.player.unit().type || Vars.player.unit().type == UnitTypes.block);
   
   b.image(Core.atlas.find("test-utils-clone")).size(40).padLeft(-60);
   if(!mobile){
@@ -260,8 +266,12 @@ function addClone(t, mobile){
 
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
 
-    if(timers.get(3, 20) && !Vars.headless && Vars.player.unit().type != null){ //Slight delay to reduce lag
-      bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
+    if(!Vars.headless && Vars.player.unit().type != null && timers.get(3, 20)){ //Slight delay to reduce lag
+      if(Vars.player.unit().type == UnitTypes.block){
+        bs.imageUp = new TextureRegionDrawable(Icon.cancel);
+      }else{
+        bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
+      }
     }
   });
   
@@ -503,44 +513,53 @@ function check(){
 
 //Region Folder
 
-let schem = () => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty();
+let schem = Prov(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
 
 function folder(table){
   let a = table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     folding(t);
-  })).padBottom(TCOffset).padLeft(Vars.mobile ? 172 : 480);
+  })).padBottom(TCOffset).padLeft(Vars.mobile ? 164 : 480);
   table.fillParent = true;
-  table.visibility = () => !folded &&
-    Vars.ui.hudfrag.shown &&
-    !Vars.ui.minimapfrag.shown() &&
-    (Vars.mobile ?
-      !(Vars.player.unit().isBuilding() ||
-      Vars.control.input.block != null ||
-      Vars.control.input.mode == PlaceMode.breaking ||
-      !Vars.control.input.selectRequests.isEmpty() &&
-      schem.get()) :
-    true
-  );
+  table.visibility = () => {
+    print("1");
+    if(folded) return false;
+    print("2");
+    if(!Vars.ui.hudfrag.shown) return false;
+    print("3");
+    if(Vars.ui.minimapfrag.shown()) return false;
+    print("4");
+    if(!Vars.mobile) return true;
+    print("5");
+    if(Vars.player.unit().isBuilding()) return false;
+    print("6");
+    if(Vars.control.input.block != null) return false;
+    print("7");
+    if(Vars.control.input.mode == PlaceMode.breaking) return false;
+    print("8");
+    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    print("9");
+    return true;
+  };
 }
 
 function folderFolded(table){
   let a = table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     folding(t);
-  })).padBottom(TCOffset).padLeft(Vars.mobile ? 160 : 352);
+  })).padBottom(TCOffset).padLeft(Vars.mobile ? 276 : 352);
   table.fillParent = true;
-  table.visibility = () => folded &&
-    Vars.ui.hudfrag.shown &&
-    !Vars.ui.minimapfrag.shown() &&
-    (Vars.mobile ?
-      !(Vars.player.unit().isBuilding() ||
-      Vars.control.input.block != null ||
-      Vars.control.input.mode == PlaceMode.breaking ||
-      !Vars.control.input.selectRequests.isEmpty() &&
-      schem.get()) :
-    true
-  );
+  table.visibility = () => {
+    if(!folded) return false;
+    if(!Vars.ui.hudfrag.shown) return false;
+    if(Vars.ui.minimapfrag.shown()) return false;
+    if(!Vars.mobile) return true;
+    if(Vars.player.unit().isBuilding()) return false;
+    if(Vars.control.input.block != null) return false;
+    if(Vars.control.input.mode == PlaceMode.breaking) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    return true;
+  };
 }
 
 //Region Team Changer Tables
@@ -560,18 +579,17 @@ function addTable(table){
     }
   })).padBottom(TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded &&
-    Vars.ui.hudfrag.shown &&
-    !Vars.ui.minimapfrag.shown() &&
-    !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
-    (Vars.mobile ?
-      !(Vars.player.unit().isBuilding() ||
-      Vars.control.input.block != null ||
-      Vars.control.input.mode == PlaceMode.breaking ||
-      !Vars.control.input.selectRequests.isEmpty() &&
-      schem.get()) :
-    true
-  );
+  table.visibility = () => {
+    if(folded) return false;
+    if(!Vars.ui.hudfrag.shown) return false;
+    if(Vars.ui.minimapfrag.shown()) return false;
+    if(!Vars.mobile) return true;
+    if(Vars.player.unit().isBuilding()) return false;
+    if(Vars.control.input.block != null) return false;
+    if(Vars.control.input.mode == PlaceMode.breaking) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    return true;
+  };
 }
 
 function addMiniT(table){
@@ -584,18 +602,17 @@ function addMiniT(table){
     }
   })).padBottom(TCOffset);
   table.fillParent = true;
-  table.visibility = () => folded &&
-    Vars.ui.hudfrag.shown &&
-    !Vars.ui.minimapfrag.shown() &&
-    !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
-    (Vars.mobile ?
-      !(Vars.player.unit().isBuilding() ||
-      Vars.control.input.block != null ||
-      Vars.control.input.mode == PlaceMode.breaking ||
-      !Vars.control.input.selectRequests.isEmpty() &&
-      schem.get()) :
-    true
-  );
+  table.visibility = () => {
+    if(!folded) return false;
+    if(!Vars.ui.hudfrag.shown) return false;
+    if(Vars.ui.minimapfrag.shown()) return false;
+    if(!Vars.mobile) return true;
+    if(Vars.player.unit().isBuilding()) return false;
+    if(Vars.control.input.block != null) return false;
+    if(Vars.control.input.mode == PlaceMode.breaking) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    return true;
+  };
 }
 
 //EndRegion
@@ -617,18 +634,17 @@ function addSecondT(table){
   })).padBottom((Vars.mobile ? buttonHeight : 3 * buttonHeight) + TCOffset);
   table.fillParent = true;
   table.fillParent = true;
-  table.visibility = () => !folded &&
-    Vars.ui.hudfrag.shown &&
-    !Vars.ui.minimapfrag.shown() &&
-    !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
-    (Vars.mobile ?
-      !(Vars.player.unit().isBuilding() ||
-      Vars.control.input.block != null ||
-      Vars.control.input.mode == PlaceMode.breaking ||
-      !Vars.control.input.selectRequests.isEmpty() &&
-      schem.get()) :
-    true
-  );
+  table.visibility = () => {
+    if(folded) return false;
+    if(!Vars.ui.hudfrag.shown) return false;
+    if(Vars.ui.minimapfrag.shown()) return false;
+    if(!Vars.mobile) return true;
+    if(Vars.player.unit().isBuilding()) return false;
+    if(Vars.control.input.block != null) return false;
+    if(Vars.control.input.mode == PlaceMode.breaking) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    return true;
+  };
 }
 
 function addMiniSecondT(table){
@@ -640,18 +656,17 @@ function addMiniSecondT(table){
     addKill(t, true).size(mobileWidth, 40);
   })).padBottom(TCOffset).padLeft(xOff);
   table.fillParent = true;
-  table.visibility = () => folded &&
-    Vars.ui.hudfrag.shown &&
-    !Vars.ui.minimapfrag.shown() &&
-    !(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
-    (Vars.mobile ?
-      !(Vars.player.unit().isBuilding() ||
-      Vars.control.input.block != null ||
-      Vars.control.input.mode == PlaceMode.breaking ||
-      !Vars.control.input.selectRequests.isEmpty() &&
-      schem.get()) :
-    true
-  );
+  table.visibility = () => {
+    if(!folded) return false;
+    if(!Vars.ui.hudfrag.shown) return false;
+    if(Vars.ui.minimapfrag.shown()) return false;
+    if(!Vars.mobile) return true;
+    if(Vars.player.unit().isBuilding()) return false;
+    if(Vars.control.input.block != null) return false;
+    if(Vars.control.input.mode == PlaceMode.breaking) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    return true;
+  };
 }
 
 //EndRegion
@@ -670,18 +685,17 @@ function addThirdT(table){
     }
   })).padBottom((Vars.mobile ? 2 * buttonHeight : 2 * buttonHeight) + TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded &&
-    Vars.ui.hudfrag.shown &&
-    !Vars.ui.minimapfrag.shown() &&
-    //!(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
-    (Vars.mobile ?
-      !(Vars.player.unit().isBuilding() ||
-      Vars.control.input.block != null ||
-      Vars.control.input.mode == PlaceMode.breaking ||
-      !Vars.control.input.selectRequests.isEmpty() &&
-      schem.get()) :
-    true
-  );
+  table.visibility = () => {
+    if(folded) return false;
+    if(!Vars.ui.hudfrag.shown) return false;
+    if(Vars.ui.minimapfrag.shown()) return false;
+    if(!Vars.mobile) return true;
+    if(Vars.player.unit().isBuilding()) return false;
+    if(Vars.control.input.block != null) return false;
+    if(Vars.control.input.mode == PlaceMode.breaking) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    return true;
+  };
 }
 
 function addMiniThirdT(table){
@@ -691,18 +705,17 @@ function addMiniThirdT(table){
     addInvincibility(t, true).size(iconWidth, 40);
   })).padBottom(TCOffset).padLeft(Vars.mobile ? 44 : 120);
   table.fillParent = true;
-  table.visibility = () => folded &&
-    Vars.ui.hudfrag.shown &&
-    !Vars.ui.minimapfrag.shown() &&
-    //!(Vars.player.unit().type == UnitTypes.block) && !(Vars.player.unit() == null) &&
-    (Vars.mobile ?
-      !(Vars.player.unit().isBuilding() ||
-      Vars.control.input.block != null ||
-      Vars.control.input.mode == PlaceMode.breaking ||
-      !Vars.control.input.selectRequests.isEmpty() &&
-      schem.get()) :
-    true
-  );
+  table.visibility = () => {
+    if(!folded) return false;
+    if(!Vars.ui.hudfrag.shown) return false;
+    if(Vars.ui.minimapfrag.shown()) return false;
+    if(!Vars.mobile) return true;
+    if(Vars.player.unit().isBuilding()) return false;
+    if(Vars.control.input.block != null) return false;
+    if(Vars.control.input.mode == PlaceMode.breaking) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    return true;
+  };
 }
 
 //EndRegion
@@ -720,17 +733,17 @@ function addFourthT(table){
     }
   })).padBottom((Vars.mobile ? 3 * buttonHeight : buttonHeight) + TCOffset);
   table.fillParent = true;
-  table.visibility = () => !folded &&
-    Vars.ui.hudfrag.shown &&
-    !Vars.ui.minimapfrag.shown() &&
-    (Vars.mobile ?
-      !(Vars.player.unit().isBuilding() ||
-      Vars.control.input.block != null ||
-      Vars.control.input.mode == PlaceMode.breaking ||
-      !Vars.control.input.selectRequests.isEmpty() &&
-      schem.get()) :
-    true
-  );
+  table.visibility = () => {
+    if(folded) return false;
+    if(!Vars.ui.hudfrag.shown) return false;
+    if(Vars.ui.minimapfrag.shown()) return false;
+    if(!Vars.mobile) return true;
+    if(Vars.player.unit().isBuilding()) return false;
+    if(Vars.control.input.block != null) return false;
+    if(Vars.control.input.mode == PlaceMode.breaking) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    return true;
+  };
 }
 
 function addMiniFourthdT(table){
@@ -740,17 +753,17 @@ function addMiniFourthdT(table){
     addFillCore(t, true).size(iconWidth, 40);
   })).padBottom(buttonHeight + TCOffset)
   table.fillParent = true;
-  table.visibility = () => folded &&
-    Vars.ui.hudfrag.shown &&
-    !Vars.ui.minimapfrag.shown() &&
-    (Vars.mobile ?
-      !(Vars.player.unit().isBuilding() ||
-      Vars.control.input.block != null ||
-      Vars.control.input.mode == PlaceMode.breaking ||
-      !Vars.control.input.selectRequests.isEmpty() &&
-      schem.get()) :
-    true
-  );
+  table.visibility = () => {
+    if(!folded) return false;
+    if(!Vars.ui.hudfrag.shown) return false;
+    if(Vars.ui.minimapfrag.shown()) return false;
+    if(!Vars.mobile) return true;
+    if(Vars.player.unit().isBuilding()) return false;
+    if(Vars.control.input.block != null) return false;
+    if(Vars.control.input.mode == PlaceMode.breaking) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    return true;
+  };
 }
 
 //EndRegion
