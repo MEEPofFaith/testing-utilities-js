@@ -191,12 +191,8 @@ function addKill(t, mobile){
 
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
 
-    if(!Vars.headless && Vars.player.unit().type != null && timers.get(2, 20)){ //Slight delay to reduce lag
-      if(Vars.player.unit().type == UnitTypes.block){
-        bs.imageUp = new TextureRegionDrawable(Icon.cancel);
-      }else{
-        bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
-      }
+    if(!Vars.headless && Vars.player.unit().type != null && Vars.player.unit().type == UnitTypes.block && timers.get(2, 20)){ //Slight delay to reduce lag
+      bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
     }
   });
 
@@ -266,12 +262,8 @@ function addClone(t, mobile){
 
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
 
-    if(!Vars.headless && Vars.player.unit().type != null && timers.get(3, 20)){ //Slight delay to reduce lag
-      if(Vars.player.unit().type == UnitTypes.block){
-        bs.imageUp = new TextureRegionDrawable(Icon.cancel);
-      }else{
-        bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
-      }
+    if(!Vars.headless && Vars.player.unit().type != null && Vars.player.unit().type == UnitTypes.block && timers.get(3, 20)){ //Slight delay to reduce lag
+      bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
     }
   });
   
