@@ -513,8 +513,6 @@ function check(){
 
 //Region Folder
 
-let schem = Prov(() => Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty());
-
 function folder(table){
   let a = table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
@@ -529,7 +527,7 @@ function folder(table){
     if(Vars.player.unit().isBuilding()) return false;
     if(Vars.control.input.block != null) return false;
     if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
     return true;
   };
 }
@@ -548,7 +546,7 @@ function folderFolded(table){
     if(Vars.player.unit().isBuilding()) return false;
     if(Vars.control.input.block != null) return false;
     if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
     return true;
   };
 }
@@ -578,7 +576,7 @@ function addTable(table){
     if(Vars.player.unit().isBuilding()) return false;
     if(Vars.control.input.block != null) return false;
     if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
     return true;
   };
 }
@@ -601,7 +599,7 @@ function addMiniT(table){
     if(Vars.player.unit().isBuilding()) return false;
     if(Vars.control.input.block != null) return false;
     if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
     return true;
   };
 }
@@ -633,7 +631,7 @@ function addSecondT(table){
     if(Vars.player.unit().isBuilding()) return false;
     if(Vars.control.input.block != null) return false;
     if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
     return true;
   };
 }
@@ -655,7 +653,7 @@ function addMiniSecondT(table){
     if(Vars.player.unit().isBuilding()) return false;
     if(Vars.control.input.block != null) return false;
     if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
     return true;
   };
 }
@@ -684,7 +682,7 @@ function addThirdT(table){
     if(Vars.player.unit().isBuilding()) return false;
     if(Vars.control.input.block != null) return false;
     if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
     return true;
   };
 }
@@ -704,7 +702,7 @@ function addMiniThirdT(table){
     if(Vars.player.unit().isBuilding()) return false;
     if(Vars.control.input.block != null) return false;
     if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
     return true;
   };
 }
@@ -732,7 +730,7 @@ function addFourthT(table){
     if(Vars.player.unit().isBuilding()) return false;
     if(Vars.control.input.block != null) return false;
     if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
     return true;
   };
 }
@@ -752,7 +750,7 @@ function addMiniFourthdT(table){
     if(Vars.player.unit().isBuilding()) return false;
     if(Vars.control.input.block != null) return false;
     if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    if(!Vars.control.input.selectRequests.isEmpty() && schem.get()) return false;
+    if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
     return true;
   };
 }
