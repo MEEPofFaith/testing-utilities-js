@@ -117,7 +117,7 @@ function folding(t){
 //Region Clone/Seppuku
 
 function addKill(t, mobile){
-  let b = new ImageButton(new TextureRegionDrawable(UnitTypes.gamma.icon(Cicon.full)), Styles.logici);
+  let b = new ImageButton(Vars.ui.getIcon("units"), Styles.logici);
   b.getImage().setScaling(Scaling.fit);
   let bs = b.style;
   bs.down = Styles.flatDown;
@@ -191,7 +191,7 @@ function addKill(t, mobile){
 
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
 
-    if(!Vars.headless && Vars.player.unit().type != null && Vars.player.unit().type == UnitTypes.block && timers.get(2, 20)){ //Slight delay to reduce lag
+    if(!Vars.headless && Vars.player.unit().type != null && Vars.player.unit().type != UnitTypes.block && timers.get(2, 20)){ //Slight delay to reduce lag
       bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
     }
   });
@@ -200,7 +200,7 @@ function addKill(t, mobile){
 }
 
 function addClone(t, mobile){
-  let b = new ImageButton(Vars.ui.getIcon("units", "copy"), Styles.logici);
+  let b = new ImageButton(Vars.ui.getIcon("units"), Styles.logici);
   b.getImage().setScaling(Scaling.fit);
   let bs = b.style;
   bs.down = Styles.flatDown;
@@ -262,7 +262,7 @@ function addClone(t, mobile){
 
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
 
-    if(!Vars.headless && Vars.player.unit().type != null && Vars.player.unit().type == UnitTypes.block && timers.get(3, 20)){ //Slight delay to reduce lag
+    if(!Vars.headless && Vars.player.unit().type != null && Vars.player.unit().type != UnitTypes.block && timers.get(3, 20)){ //Slight delay to reduce lag
       bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
     }
   });
