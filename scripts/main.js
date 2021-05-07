@@ -802,7 +802,7 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
 
     //Settings
     Vars.ui.settings.game.checkPref("startfolded", Core.settings.getBool("startfolded", false)); //Start Folded
-    Vars.ui.settings.game.checkPref("instakill", Core.settings.getBool("instakill", true)); //Instakill
+    Vars.ui.settings.game.checkPref("instakill", Core.settings.getBool("instakill", false)); //Instakill
   });
   
   Events.on(WorldLoadEvent, () => {
