@@ -274,7 +274,7 @@ function addClone(t, mobile){
 //Endregin
 //Region Heal/Invincibility
 
-function addHeal(t, mobile){
+function healButton(mobile){
   let b = new ImageButton(Core.atlas.find("test-utils-heal"), Styles.logici);
   let bs = b.style;
   bs.down = Styles.flatDown;
@@ -319,10 +319,10 @@ function addHeal(t, mobile){
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
   });
   
-  return t.add(b).color(curTeam.color).pad(0).left();
+  return b.left();
 }
 
-function addInvincibility(t, mobile){
+function invincibilityButton(mobile){
   let b = new ImageButton(Core.atlas.find("test-utils-invincibility"), Styles.logici);
   let bs = b.style;
   bs.down = Styles.flatDown;
@@ -367,7 +367,7 @@ function addInvincibility(t, mobile){
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
   });
   
-  return t.add(b).color(curTeam.color).pad(0).left();
+  return b.left();
 }
 
 //EndRegion
@@ -524,11 +524,11 @@ function folder(table){
   };
 }
 
-function folderFolded(table){
+function foldedFolder(table){
   let a = table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     folding(t);
-  })).padBottom(TCOffset).padLeft(Vars.mobile ? 276 : 352);
+  })).padBottom(TCOffset).padLeft(Vars.mobile ? 176 : 252);
   table.fillParent = true;
   table.visibility = () => {
     if(!folded) return false;
@@ -545,7 +545,7 @@ function folderFolded(table){
 
 //Region Team Changer Tables
 
-function addTable(table){
+function teamChanger(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.pane);
     if(Vars.mobile){
@@ -573,7 +573,7 @@ function addTable(table){
   };
 }
 
-function addMiniT(table){
+function foldedTeamChanger(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.pane);
     if(Vars.mobile){
@@ -602,7 +602,7 @@ function addMiniT(table){
 const mobileWidth = 56;
 const iconWidth = 40;
 
-function addSecondT(table){
+function selfTable(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     if(Vars.mobile){
@@ -612,7 +612,7 @@ function addSecondT(table){
       addClone(t, false).size(104, 40);
       addKill(t, false).size(140, 40);
     }
-  })).padBottom((Vars.mobile ? buttonHeight : 3 * buttonHeight) + TCOffset);
+  })).padBottom((Vars.mobile ? buttonHeight : 2 * buttonHeight) + TCOffset);
   table.fillParent = true;
   table.fillParent = true;
   table.visibility = () => {
@@ -628,9 +628,8 @@ function addSecondT(table){
   };
 }
 
-function addMiniSecondT(table){
-  let healWidth = iconWidth * 2 + 20
-  let xOff = healWidth + (Vars.mobile ? 44 : 120);
+function foldedSelfTable(table){
+  let xOff = Vars.mobile ? 44 : 120;
   table.table(Styles.black5, cons(t => {
     t.background(Tex.pane);
     addClone(t, true).size(mobileWidth, 40);
@@ -651,58 +650,9 @@ function addMiniSecondT(table){
 }
 
 //EndRegion
-//Region Heal/Invincibility Tables
-
-function addThirdT(table){
-  table.table(Styles.black5, cons(t => {
-    if(Vars.mobile){
-      t.background(Tex.pane);
-      addHeal(t, true).size(iconWidth, 40);
-      addInvincibility(t, true).size(iconWidth, 40);
-    }else{
-      t.background(Tex.buttonEdge3);
-      addHeal(t, false).size(96, 40);
-      addInvincibility(t, false).size(164, 40);
-    }
-  })).padBottom((Vars.mobile ? 2 * buttonHeight : 2 * buttonHeight) + TCOffset);
-  table.fillParent = true;
-  table.visibility = () => {
-    if(folded) return false;
-    if(!Vars.ui.hudfrag.shown) return false;
-    if(Vars.ui.minimapfrag.shown()) return false;
-    if(!Vars.mobile) return true;
-    if(Vars.player.unit().isBuilding()) return false;
-    if(Vars.control.input.block != null) return false;
-    if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
-    return true;
-  };
-}
-
-function addMiniThirdT(table){
-  table.table(Styles.black5, cons(t => {
-    t.background(Tex.pane);
-    addHeal(t, true).size(iconWidth, 40);
-    addInvincibility(t, true).size(iconWidth, 40);
-  })).padBottom(TCOffset).padLeft(Vars.mobile ? 44 : 120);
-  table.fillParent = true;
-  table.visibility = () => {
-    if(!folded) return false;
-    if(!Vars.ui.hudfrag.shown) return false;
-    if(Vars.ui.minimapfrag.shown()) return false;
-    if(!Vars.mobile) return true;
-    if(Vars.player.unit().isBuilding()) return false;
-    if(Vars.control.input.block != null) return false;
-    if(Vars.control.input.mode == PlaceMode.breaking) return false;
-    if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
-    return true;
-  };
-}
-
-//EndRegion
 //Region Sandbox/Fill Core Tables
 
-function addFourthT(table){
+function sandboxTable(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     if(Vars.mobile){
@@ -712,7 +662,7 @@ function addFourthT(table){
       addSandbox(t, false).size(108 + iconWidth, 40);
       addFillCore(t, false).size(120 + iconWidth, 40);
     }
-  })).padBottom((Vars.mobile ? 3 * buttonHeight : buttonHeight) + TCOffset);
+  })).padBottom((Vars.mobile ? 2 * buttonHeight : buttonHeight) + TCOffset);
   table.fillParent = true;
   table.visibility = () => {
     if(folded) return false;
@@ -727,7 +677,7 @@ function addFourthT(table){
   };
 }
 
-function addMiniFourthdT(table){
+function foldedSandboxTable(table){
   table.table(Styles.black5, cons(t => {
     t.background(Tex.buttonEdge3);
     addSandbox(t, true).size(iconWidth, 40);
@@ -761,11 +711,9 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
   let mft = new Table();
   let st = new Table();
   let mst = new Table();
-  let tt = new Table();
-  let mtt = new Table();
   let fot = new Table();
   let mfot = new Table();
-  
+
   Events.on(ClientLoadEvent, () => {
     ff.bottom().left();
     fff.bottom().left();
@@ -773,32 +721,34 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
     mft.bottom().left();
     st.bottom().left();
     mst.bottom().left();
-    tt.bottom().left();
-    mtt.bottom().left();
     fot.bottom().left();
     mfot.bottom().left();
 
     folder(ff);
-    folderFolded(fff);
-    addTable(ft);
-    addSecondT(mft);
-    addMiniT(st);
-    addMiniSecondT(mst);
-    addThirdT(tt);
-    addMiniThirdT(mtt);
-    addFourthT(fot);
-    addMiniFourthdT(mfot);
+    foldedFolder(fff);
+    teamChanger(ft);
+    selfTable(mft);
+    foldedTeamChanger(st);
+    foldedSelfTable(mst);
+    sandboxTable(fot);
+    foldedSandboxTable(mfot);
 
     set(ff);
     set(fff);
     set(ft);
     set(mft);  
     set(st);
-    set(mst); 
-    set(tt);
-    set(mtt);
+    set(mst);
     set(fot);
     set(mfot);
+
+    Events.on(WorldLoadEvent, () => {
+      let m = Vars.mobile;
+      let ui = Vars.ui.hudGroup.children.get(5).children.get(m ? 2 : 0).children.get(0).children.get(0).children.get(0);
+      ui.row();
+      ui.add(healButton(m)).size(96, 40).color(curTeam.color).pad(0).left().padLeft(4);
+      ui.add(invincibilityButton(m)).size(164, 40).color(curTeam.color).pad(0).left().padLeft(-20);
+    });
 
     //Settings
     Vars.ui.settings.game.checkPref("startfolded", Core.settings.getBool("startfolded", false)); //Start Folded
