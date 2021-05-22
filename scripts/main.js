@@ -274,7 +274,7 @@ function addClone(t, mobile){
 //Endregin
 //Region Heal/Invincibility
 
-function healButton(mobile){
+function healButton(){
   let b = new ImageButton(Core.atlas.find("test-utils-heal"), Styles.logici);
   let bs = b.style;
   bs.down = Styles.flatDown;
@@ -283,16 +283,14 @@ function healButton(mobile){
   bs.imageDisabledColor = Color.gray;
   bs.imageUpColor = Color.white;
   
-  let offset = mobile ? 0 : -4;
+  let offset = -4;
   bs.pressedOffsetX = offset;
   bs.unpressedOffsetX = offset;
   bs.checkedOffsetX = offset;
 
   b.setDisabled(() => Vars.state.isCampaign() || !Vars.player.unit() || !Vars.player.unit().type);
   
-  if(!mobile){
-    b.label(() => b.isDisabled() ? "[gray]Heal[]" : "[white]Heal[]").padLeft(0);
-  }
+  b.label(() => b.isDisabled() ? "[gray]Heal[]" : "[white]Heal[]").padLeft(0);
   
   b.clicked(() => {
     check();
@@ -322,7 +320,7 @@ function healButton(mobile){
   return b.left();
 }
 
-function invincibilityButton(mobile){
+function invincibilityButton(){
   let b = new ImageButton(Core.atlas.find("test-utils-invincibility"), Styles.logici);
   let bs = b.style;
   bs.down = Styles.flatDown;
@@ -331,16 +329,14 @@ function invincibilityButton(mobile){
   bs.imageDisabledColor = Color.gray;
   bs.imageUpColor = Color.white;
   
-  let offset = mobile ? 0 : -4;
+  let offset = -4;
   bs.pressedOffsetX = offset;
   bs.unpressedOffsetX = offset;
   bs.checkedOffsetX = offset;
 
   b.setDisabled(() => Vars.state.isCampaign() || !Vars.player.unit() || !Vars.player.unit().type);
   
-  if(!mobile){
-    b.label(() => b.isDisabled() ? "[gray]Invincibility[]" : "[white]Invincibility[]").padLeft(0);
-  }
+  b.label(() => b.isDisabled() ? "[gray]Invincibility[]" : "[white]Invincibility[]").padLeft(0);
   
   b.clicked(() => {
     check();
@@ -714,6 +710,8 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
   let fot = new Table();
   let mfot = new Table();
 
+  let initialized = false;
+
   Events.on(ClientLoadEvent, () => {
     ff.bottom().left();
     fff.bottom().left();
@@ -743,11 +741,14 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
     set(mfot);
 
     Events.on(WorldLoadEvent, () => {
-      let m = Vars.mobile;
-      let ui = Vars.ui.hudGroup.children.get(5).children.get(m ? 2 : 0).children.get(0).children.get(0).children.get(0);
-      ui.row();
-      ui.add(healButton(m)).size(96, 40).color(curTeam.color).pad(0).left().padLeft(4);
-      ui.add(invincibilityButton(m)).size(164, 40).color(curTeam.color).pad(0).left().padLeft(-20);
+      if(!initialized){
+        let m = Vars.mobile;
+        let ui = Vars.ui.hudGroup.children.get(5).children.get(m ? 2 : 0).children.get(0).children.get(0).children.get(0);
+        ui.row();
+        ui.add(healButton()).size(96, 40).color(curTeam.color).pad(0).left().padLeft(4);
+        ui.add(invincibilityButton()).size(164, 40).color(curTeam.color).pad(0).left().padLeft(-20);
+        initialized = true;
+      }
     });
 
     //Settings
