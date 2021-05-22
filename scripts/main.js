@@ -5,7 +5,7 @@ const titleList = ["[#4d4e58]Derelict[]", "[accent]Sharded[]", "[#f25555]Crux[]"
 const abbreList = ["[#4d4e58]D[]", "[accent]S[]", "[#f25555]C[]", "[#54d67d]G[]", "[#995bb0]P[]", "[#5a4deb]B[]"];
 let mode = 1;
 let curTeam = Team.sharded;
-const timers = new Interval(4);
+const timers = new Interval(2);
 let buttonHeight = 60;
 let TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? 62 : 0;
 
@@ -164,7 +164,7 @@ function addKill(t, mobile){
   b.update(() => {
     if(b.isPressed()){
       h3 += Core.graphics.getDeltaTime() * 60;
-      if(h3 > longPress && timers.get(0, 5)){
+      if(h3 > longPress){
         if(Vars.net.client()){
           const code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().kill():0})";
           Call.sendChatMessage("/js " + code);
@@ -191,7 +191,7 @@ function addKill(t, mobile){
 
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
 
-    if(!Vars.headless && Vars.player.unit().type != null && Vars.player.unit().type != UnitTypes.block && timers.get(2, 20)){ //Slight delay to reduce lag
+    if(!Vars.headless && Vars.player.unit().type != null && Vars.player.unit().type != UnitTypes.block && timers.get(0, 20)){ //Slight delay to reduce lag
       bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
     }
   });
@@ -242,7 +242,7 @@ function addClone(t, mobile){
     if(b.isPressed()){
       check();
       h4 += Core.graphics.getDeltaTime() * 60;
-      if(h4 > longPress && timers.get(2, 5)){
+      if(h4 > longPress){
         if(Vars.net.client()){
           const code = "Groups.player.each(p=>{p.name.includes(\"" + playerName + "\")?p.unit().type.spawn(p.team(),p.getX(),p.getY()):0})";
           Call.sendChatMessage("/js " + code);
@@ -262,7 +262,7 @@ function addClone(t, mobile){
 
     b.setColor(b.isDisabled() ? Color.white : Vars.player.team.color != null ? Vars.player.team.color : curTeam.color);
 
-    if(!Vars.headless && Vars.player.unit().type != null && Vars.player.unit().type != UnitTypes.block && timers.get(3, 20)){ //Slight delay to reduce lag
+    if(!Vars.headless && Vars.player.unit().type != null && Vars.player.unit().type != UnitTypes.block && timers.get(1, 20)){ //Slight delay to reduce lag
       bs.imageUp = new TextureRegionDrawable(Vars.player.unit().type.icon(Cicon.full));
     }
   });
