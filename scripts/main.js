@@ -743,10 +743,10 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
     Events.on(WorldLoadEvent, () => {
       if(!initialized){
         let m = Vars.mobile;
-        let ui = Vars.ui.hudGroup.children.get(5).children.get(m ? 2 : 0).children.get(0).children.get(0).children.get(0);
-        ui.row();
-        ui.add(healButton()).size(96, 40).color(curTeam.color).pad(0).left().padLeft(4);
-        ui.add(invincibilityButton()).size(164, 40).color(curTeam.color).pad(0).left().padLeft(-20);
+        let healthUI = Vars.ui.hudGroup.children.get(5).children.get(m ? 2 : 0).children.get(0).children.get(0).children.get(0);
+        healthUI.row();
+        healthUI.add(healButton()).size(96, 40).color(curTeam.color).pad(0).left().padLeft(4);
+        healthUI.add(invincibilityButton()).size(164, 40).color(curTeam.color).pad(0).left().padLeft(-20);
         initialized = true;
       }
     });
