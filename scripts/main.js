@@ -739,7 +739,35 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
     set(mst);
     set(fot);
     set(mfot);
+    
+    //Settings
+    const dialog = new BaseDialog("Testing Utilities");
+    dialog.addCloseButton();
+    dialog.cont.center().pane(p => {
+      p.defaults().height(36);
+      
+      function addSetting(name, def){
+        // if(!name || typeof name !== "string") return;
+        // if(!def || typeof def !== "boolean") return;
+        
+        p.check(Core.bundle.get("setting." + name + ".name"), Core.settings.getBool(name, def), () => {
+          Core.settings.put(name, !Core.settings.getBool(name, def));
+        }).left();
+        p.row();
+      }
+      
+      addSetting("startfolded", true); //Start Folded
+      addSetting("instakill", false); //Instakill
+    }).growY().width(Vars.mobile ? Core.graphics.getWidth() : Core.graphics.getWidth() / 3);
+    
+    Vars.ui.settings.shown(() => {
+      Vars.ui.settings.children.get(1).children.get(0).children.get(0).row();
+      Vars.ui.settings.children.get(1).children.get(0).children.get(0).button(Core.bundle.get("tu-title"), Styles.cleart, () => {
+        dialog.show();
+      });
+    });
 
+    //Health/Invincibility buttons
     Events.on(WorldLoadEvent, () => {
       if(!initialized){
         let m = Vars.mobile;
@@ -750,10 +778,6 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
         initialized = true;
       }
     });
-
-    //Settings
-    Vars.ui.settings.game.checkPref("startfolded", Core.settings.getBool("startfolded", false)); //Start Folded
-    Vars.ui.settings.game.checkPref("instakill", Core.settings.getBool("instakill", false)); //Instakill
   });
   
   Events.on(WorldLoadEvent, () => {
