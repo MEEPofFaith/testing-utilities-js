@@ -533,7 +533,7 @@ function clearStatuses(){
         let code = [
             "Groups.player.each(p=>{p.name.includes(\"",
             playerName,
-            "\")&&p.unit()!=null?p.unit().clearStatuses()"
+            "\")&&p.unit()!=null?p.unit().clearStatuses():0})"
         ];
     }else{
         let p = Vars.player.unit();
