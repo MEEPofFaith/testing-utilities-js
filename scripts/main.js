@@ -497,14 +497,14 @@ function addFillCore(t, mobile){
 //EndRegion
 //Region Status Effect Menu
 
-function applyLocal(){ // Singleplayer
+function applyLocal(perma){ // Singleplayer
     let p = Vars.player.unit();
     if(p != null){
-        p.apply(status, duration * 60);
+        p.apply(status, perma ? Number.MAX_VALUE : duration * 60);
     }
 }
 
-function applyRemote(){ // Multiplayer
+function applyRemote(perma){ // Multiplayer
     let eff = "StatusEffects." + status.name;
 
     let code = [
@@ -513,7 +513,7 @@ function applyRemote(){ // Multiplayer
         "\")&&p.unit()!=null?p.unit().apply(",
         eff,
         ",",
-        duration * 60,
+        perma ? Number.MAX_VALUE : duration * 60,
         "):0})"
     ].join("");
 
@@ -521,7 +521,11 @@ function applyRemote(){ // Multiplayer
 }
 
 function apply(){
-    (Vars.net.client() ? applyRemote : applyLocal)();
+    (Vars.net.client() ? applyRemote : applyLocal)(false);
+}
+
+function applyPerma(){
+    (Vars.net.client() ? applyRemote : applyLocal)(true);
 }
 
 function addStatusMenu(t, mobile){
@@ -540,7 +544,7 @@ function addStatusMenu(t, mobile){
     bs.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
 
     /* Title */
-    table.label(() => status.localizedName);
+    table.label(() => status.localizedName + (status.permanent ? " (Permanent effect)" : ""));
     table.row();
 
     /* Effect selection */
@@ -584,8 +588,8 @@ function addStatusMenu(t, mobile){
 
     /* Buttons */
     dialog.addCloseButton();
-    dialog.buttons.button("$editor.apply", Icon.add, apply);
-    //TODO Permanent
+    dialog.buttons.button("$tu.apply-effect", Icon.add, apply);
+    dialog.buttons.button("$tu.apply-perma", Icon.add, applyPerma);
     //TODO Clear
 
     /* Set clicky */
