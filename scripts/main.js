@@ -13,6 +13,13 @@ let folded = false;
 let fillMode = true;
 const longPress = 30;
 
+// Status Data
+let status = StatusEffects.burning;
+let duration = 10;
+
+let minDur = 0.125;
+let maxDur = 60;
+
 let playerName = Core.settings.getString("name");
 
 const iconEffect = new Effect(60, e => {
@@ -488,6 +495,114 @@ function addFillCore(t, mobile){
 }
 
 //EndRegion
+//Region Status Effect Menu
+
+function applyLocal(){ // Singleplayer
+    let p = Vars.player.unit();
+    if(p != null){
+        p.apply(status, duration * 60);
+    }
+}
+
+function applyRemote(){ // Multiplayer
+    let eff = "StatusEffects." + status.name;
+
+    let code = [
+        "Groups.player.each(p=>{p.name.includes(\"",
+        playerName,
+        "\")&&p.unit()!=null?p.unit().apply(",
+        eff,
+        ",",
+        duration * 60,
+        "):0})"
+    ].join("");
+
+    Call.sendChatMessage("/js " + code);
+}
+
+function apply(){
+    (Vars.net.client() ? applyRemote : applyLocal)();
+}
+
+function addStatusMenu(t, mobile){
+    /* I would put this code in a statusApplier.js if I knew enough about js to properly module.exports it.
+     * Trust me I've tried.
+     * If he read this, QmelZ would probably die.
+    */
+    const dialog = new BaseDialog("$tu-status-applier");
+    const table = dialog.cont;
+    const sButton = new ImageButton(status.icon(Cicon.full), Styles.logici);
+    let bs = sButton.style;
+    bs.down = Styles.flatDown;
+    bs.over = Styles.flatOver;
+    bs.imageDisabledColor = Color.gray;
+    bs.imageUpColor = status.color;
+    bs.disabled = Tex.whiteui.tint(0.625, 0, 0, 0.8);
+
+    /* Title */
+    table.label(() => status.localizedName);
+    table.row();
+
+    /* Effect selection */
+    table.pane(t => {
+        let i = 0;
+
+        Vars.content.statusEffects().each(e => {
+            //None does nothing, don't show it.
+            if(e == StatusEffects.none) return;
+
+            if(i++ % 8 == 0){
+                t.row();
+            }
+
+            const icon = new TextureRegionDrawable(e.icon(Cicon.full)).tint(e.color);
+            t.button(icon, () => {
+                status = e;
+                bs.imageUp = icon;
+                bs.imageUpColor = e.color;
+            }).size(64);
+        });
+    }).top().center();
+
+    table.row();
+
+    /* Duration Selection */
+    const d = table.table().center().bottom().get();
+    let dSlider, dField;
+    d.defaults().left();
+    dSlider = d.slider(minDur, maxDur, 0.125, duration, n => {
+        duration = n;
+        dField.text = n;
+    }).get();
+    d.add("Duration (seconds): ").padLeft(8);
+    dField = d.field("" + duration, text => {
+        duration = parseInt(text);
+        dSlider.value = duration;
+    }).get();
+    dField.validator = text => !isNaN(parseInt(text));
+    table.row();
+
+    /* Buttons */
+    dialog.addCloseButton();
+    dialog.buttons.button("$editor.apply", Icon.add, apply);
+    //TODO Permanent
+    //TODO Clear
+
+    /* Set clicky */
+    if(!mobile){
+        sButton.label(() => sButton.isDisabled() ? "[gray]Status Menu[]" : "[white]Status Menu[]").padLeft(0);
+    }
+
+    sButton.setDisabled(() => Vars.state.isCampaign() || !Vars.player.unit());
+
+    sButton.clicked(() => {
+        dialog.show();
+    });
+
+    return t.add(sButton).pad(0).left();
+}
+
+//EndRegion
 
 function check(){
     if(!Vars.net.client() && Vars.state.isCampaign()) Groups.build.each(b => {
@@ -537,6 +652,7 @@ function foldedFolder(table){
     };
 }
 
+//EndRegion
 //Region Team Changer Tables
 
 function teamChanger(table){
@@ -608,7 +724,6 @@ function selfTable(table){
         }
     })).padBottom((Vars.mobile ? buttonHeight : 2 * buttonHeight) + TCOffset);
     table.fillParent = true;
-    table.fillParent = true;
     table.visibility = () => {
         if(folded) return false;
         if(!Vars.ui.hudfrag.shown) return false;
@@ -656,7 +771,7 @@ function sandboxTable(table){
             addSandbox(t, false).size(108 + iconWidth, 40);
             addFillCore(t, false).size(120 + iconWidth, 40);
         }
-    })).padBottom((Vars.mobile ? 2 * buttonHeight : buttonHeight) + TCOffset);
+    })).padBottom((Vars.mobile ? 2 * buttonHeight : buttonHeight) + TCOffset).padLeft(Vars.mobile ? 60 : 186);
     table.fillParent = true;
     table.visibility = () => {
         if(folded) return false;
@@ -676,7 +791,52 @@ function foldedSandboxTable(table){
         t.background(Tex.buttonEdge3);
         addSandbox(t, true).size(iconWidth, 40);
         addFillCore(t, true).size(iconWidth, 40);
-    })).padBottom(buttonHeight + TCOffset)
+    })).padBottom(buttonHeight + TCOffset).padLeft(iconWidth + 20);
+    table.fillParent = true;
+    table.visibility = () => {
+        if(!folded) return false;
+        if(!Vars.ui.hudfrag.shown) return false;
+        if(Vars.ui.minimapfrag.shown()) return false;
+        if(!Vars.mobile) return true;
+        if(Vars.player.unit().isBuilding()) return false;
+        if(Vars.control.input.block != null) return false;
+        if(Vars.control.input.mode == PlaceMode.breaking) return false;
+        if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
+        return true;
+    };
+}
+
+//EndRegion
+//Region Status Menu
+
+function statusTable(table){
+    table.table(Styles.black5, cons(t => {
+        t.background(Tex.pane);
+        if(Vars.mobile){
+            addStatusMenu(t, true).size(iconWidth, 40);
+        }else{
+            addStatusMenu(t, false).size(128 + iconWidth, 40);
+        }
+    })).padBottom((Vars.mobile ? 2 * buttonHeight : buttonHeight) + TCOffset);
+    table.fillParent = true;
+    table.visibility = () => {
+        if(folded) return false;
+        if(!Vars.ui.hudfrag.shown) return false;
+        if(Vars.ui.minimapfrag.shown()) return false;
+        if(!Vars.mobile) return true;
+        if(Vars.player.unit().isBuilding()) return false;
+        if(Vars.control.input.block != null) return false;
+        if(Vars.control.input.mode == PlaceMode.breaking) return false;
+        if(!Vars.control.input.selectRequests.isEmpty() && Vars.control.input.lastSchematic != null && !Vars.control.input.selectRequests.isEmpty()) return false;
+        return true;
+    };
+}
+
+function foldedStatusTable(table){
+    table.table(Styles.black5, cons(t => {
+        t.background(Tex.pane);
+        addStatusMenu(t, true).size(iconWidth, 40);
+    })).padBottom(buttonHeight + TCOffset);
     table.fillParent = true;
     table.visibility = () => {
         if(!folded) return false;
@@ -707,6 +867,8 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
     let mst = new Table();
     let fot = new Table();
     let mfot = new Table();
+    let stt = new Table();
+    let fstt = new Table();
 
     let initialized = false;
 
@@ -719,6 +881,8 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
         mst.bottom().left();
         fot.bottom().left();
         mfot.bottom().left();
+        stt.bottom().left();
+        fstt.bottom().left();
 
         folder(ff);
         foldedFolder(fff);
@@ -728,6 +892,8 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
         foldedSelfTable(mst);
         sandboxTable(fot);
         foldedSandboxTable(mfot);
+        statusTable(stt);
+        foldedStatusTable(fstt);
 
         set(ff);
         set(fff);
@@ -737,6 +903,8 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
         set(mst);
         set(fot);
         set(mfot);
+        set(stt);
+        set(fstt);
         
         //Settings
         const dialog = new BaseDialog("Testing Utilities");
