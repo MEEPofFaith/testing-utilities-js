@@ -528,6 +528,21 @@ function applyPerma(){
     (Vars.net.client() ? applyRemote : applyLocal)(true);
 }
 
+function clearStatuses(){
+    if(Vars.net.client()){
+        let code = [
+            "Groups.player.each(p=>{p.name.includes(\"",
+            playerName,
+            "\")&&p.unit()!=null?p.unit().clearStatuses()"
+        ];
+    }else{
+        let p = Vars.player.unit();
+        if(p != null){
+            p.clearStatuses();
+        }
+    }
+}
+
 function addStatusMenu(t, mobile){
     /* I would put this code in a statusApplier.js if I knew enough about js to properly module.exports it.
      * Trust me I've tried.
@@ -590,7 +605,7 @@ function addStatusMenu(t, mobile){
     dialog.addCloseButton();
     dialog.buttons.button("$tu.apply-effect", Icon.add, apply);
     dialog.buttons.button("$tu.apply-perma", Icon.add, applyPerma);
-    //TODO Clear
+    dialog.buttons.button("$tu.clear-effects", Icon.cancel, clearStatuses);
 
     /* Set clicky */
     if(!mobile){
