@@ -8,6 +8,7 @@ Just some small utilities for sandbox/modding
 - Invincibility Button: Sets your player unit's hp to infinity. (Disabled in campaign)
 - Sandbox/Survival Button: Toggles infinite resources. (Disabled in campaign)
 - Fill/Dump Core: Fill or empty your core of all items. Hold to swap. (Disabled in campaign)
+- Status Menu: Apply/clear status effects to yourself. (Disabled in campaign)
 
 A setting for making the menu folded by default can be found in game settings.
 
