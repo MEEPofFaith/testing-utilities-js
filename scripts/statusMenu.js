@@ -137,7 +137,7 @@ function statusTable(table){
         }else{
             addStatusMenu(t, false).size(128 + vars.iconWidth, 40);
         }
-    })).padBottom((Vars.mobile ? 2 * vars.buttonHeight : vars.buttonHeight) + vars.TCOffset);
+    })).padBottom(vars.buttonHeight + vars.TCOffset);
     table.fillParent = true;
     table.visibility = () => {
         if(vars.folded) return false;

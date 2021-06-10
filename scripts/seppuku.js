@@ -164,7 +164,7 @@ function selfTable(table){
             addClone(t, false).size(104, 40);
             addKill(t, false).size(140, 40);
         }
-    })).padBottom((Vars.mobile ? vars.buttonHeight : 2 * vars.buttonHeight) + vars.TCOffset);
+    })).padBottom(2 * vars.buttonHeight + vars.TCOffset);
     table.fillParent = true;
     table.visibility = () => {
         if(vars.folded) return false;

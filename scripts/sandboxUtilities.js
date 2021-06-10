@@ -20,9 +20,9 @@ function fillCore(){
     if(Vars.net.client()){
         let code;
         if(fillMode){
-            code = "Groups.player.each(p=> {p.name.includes(\"" + vars.playerName + "\")?Vars.content.items().each(i=> {p.core().items.set(i,1000000);}):0})";
+            code = "Groups.player.each(p=>{p.name.includes(\"" + vars.playerName + "\")?Vars.content.items().each(i=>{p.core().items.set(i,1000000);}):0})";
         }else if(!fillMode){
-            code = "Groups.player.each(p=> {p.name.includes(\"" + vars.playerName + "\")?Vars.content.items().each(i=> {p.core().items.set(i,0);}):0})";
+            code = "Groups.player.each(p=>{p.name.includes(\"" + vars.playerName + "\")?Vars.content.items().each(i=>{p.core().items.set(i,0);}):0})";
         }
         Call.sendChatMessage("/js " + code);
     }else{
@@ -133,7 +133,7 @@ function sandboxTable(table){
             addSandbox(t, false).size(108 + vars.iconWidth, 40);
             addFillCore(t, false).size(120 + vars.iconWidth, 40);
         }
-    })).padBottom((Vars.mobile ? 2 * vars.buttonHeight : vars.buttonHeight) + vars.TCOffset).padLeft(Vars.mobile ? 60 : 186);
+    })).padBottom(vars.buttonHeight + vars.TCOffset).padLeft(Vars.mobile ? 60 : 186);
     table.fillParent = true;
     table.visibility = () => {
         if(vars.folded) return false;
