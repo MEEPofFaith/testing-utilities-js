@@ -23,7 +23,7 @@ function applyRemote(perma){ // Multiplayer
         "\")&&p.unit()!=null?p.unit().apply(",
         eff,
         ",",
-        perma ? Number.MAX_VALUE : duration * 60,
+        perma ? "Number.MAX_VALUE" : duration * 60,
         "):0})"
     ].join("");
 
@@ -41,6 +41,7 @@ function applyPerma(){
 }
 
 function clearStatuses(){
+    vars.check();
     if(Vars.net.client()){
         let code = [
             "Groups.player.each(p=> {p.name.includes(\"",
