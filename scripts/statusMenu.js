@@ -91,7 +91,6 @@ function addStatusMenu(t, mobile){
             }).size(64);
         });
     }).top().center();
-
     table.row();
 
     /* Duration Selection */
