@@ -113,8 +113,14 @@ function addStatusMenu(t, mobile){
     /* Buttons */
     dialog.addCloseButton();
     dialog.buttons.button("$tu.apply-effect", Icon.add, apply);
-    dialog.buttons.button("$tu.apply-perma", Icon.add, applyPerma);
-    dialog.buttons.button("$tu.clear-effects", Icon.cancel, clearStatuses);
+    if(mobile){
+        dialog.buttons.row();
+        dialog.buttons.button("$tu.clear-effects", Icon.cancel, clearStatuses);
+        dialog.buttons.button("$tu.apply-perma", Icon.add, applyPerma);
+    }else{
+        dialog.buttons.button("$tu.apply-perma", Icon.add, applyPerma);
+        dialog.buttons.button("$tu.clear-effects", Icon.cancel, clearStatuses);
+    }
 
     /* Set clicky */
     if(!mobile){
