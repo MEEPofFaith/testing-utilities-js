@@ -111,9 +111,14 @@ function addStatusMenu(t, mobile){
     table.row();
 
     /* Buttons */
+    table.table(null, b => {
+        b.defaults().size(210, 64);
+
+        b.button("$tu.apply-effect", Icon.add, apply).padRight(6);
+        b.button("$tu.apply-perma", Icon.add, applyPerma);
+    }).growX();
+
     dialog.addCloseButton();
-    dialog.buttons.button("$tu.apply-effect", Icon.add, apply);
-    dialog.buttons.button("$tu.apply-perma", Icon.add, applyPerma);
     dialog.buttons.button("$tu.clear-effects", Icon.cancel, clearStatuses);
 
     /* Set clicky */
