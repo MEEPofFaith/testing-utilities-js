@@ -6,14 +6,11 @@ const health = require("health");
 const sandbox = require("sandboxUtilities");
 const status = require("statusMenu");
 
-function add(source, t){
+function add(source, t, ft){
     source.add(t);
     Vars.ui.hudGroup.addChild(t);
-}
-
-function addFolded(source, t){
-    source.addFolded(t);
-    Vars.ui.hudGroup.addChild(t);
+    source.addFolded(ft);
+    Vars.ui.hudGroup.addChild(ft);
 }
 
 if(!Vars.headless){ //Now this is what I call inefficient hell.
@@ -31,16 +28,11 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
     let initialized = false;
 
     Events.on(ClientLoadEvent, () => {
-        add(folder, fold);
-        addFolded(folder, fFold);
-        add(changer, change);
-        addFolded(changer, fChange);
-        add(self, sep);
-        addFolded(self, fSep);
-        add(sandbox, sand);
-        addFolded(sandbox, fSand);
-        add(status, stat);
-        addFolded(status, fStat);
+        add(folder, fold, fFold);
+        add(changer, change, fChange);
+        add(self, sep, fSep);
+        add(sandbox, sand, fSand);
+        add(status, stat, fStat);
         
         //Settings
         const dialog = new BaseDialog("Testing Utilities");
@@ -49,11 +41,8 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
             p.defaults().height(36);
             
             function addSetting(name, def){
-                // if(!name || typeof name !== "string") return;
-                // if(!def || typeof def !== "boolean") return;
-                
                 p.check(Core.bundle.get("setting." + name + ".name"), Core.settings.getBool(name, def), () => {
-                Core.settings.put(name, !Core.settings.getBool(name, def));
+                    Core.settings.put(name, !Core.settings.getBool(name, def));
                 }).left();
                 p.row();
             }

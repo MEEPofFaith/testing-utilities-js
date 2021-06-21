@@ -76,8 +76,7 @@ function addStatusMenu(t, mobile){
         let i = 0;
 
         Vars.content.statusEffects().each(e => {
-            //None does nothing, don't show it.
-            if(e == StatusEffects.none) return;
+            if(e == StatusEffects.none) return; //None does nothing, don't show it.
 
             if(i++ % 8 == 0){
                 t.row();
