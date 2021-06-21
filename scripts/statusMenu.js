@@ -91,7 +91,6 @@ function addStatusMenu(t, mobile){
             }).size(64);
         });
     }).top().center();
-
     table.row();
 
     /* Duration Selection */
@@ -111,16 +110,15 @@ function addStatusMenu(t, mobile){
     table.row();
 
     /* Buttons */
+    table.table(null, b => {
+        b.defaults().size(210, 64);
+
+        b.button("$tu.apply-effect", Icon.add, apply).padRight(6);
+        b.button("$tu.apply-perma", Icon.add, applyPerma);
+    }).growX();
+
     dialog.addCloseButton();
-    dialog.buttons.button("$tu.apply-effect", Icon.add, apply);
-    if(mobile){
-        dialog.buttons.row();
-        dialog.buttons.button("$tu.clear-effects", Icon.cancel, clearStatuses);
-        dialog.buttons.button("$tu.apply-perma", Icon.add, applyPerma);
-    }else{
-        dialog.buttons.button("$tu.apply-perma", Icon.add, applyPerma);
-        dialog.buttons.button("$tu.clear-effects", Icon.cancel, clearStatuses);
-    }
+    dialog.buttons.button("$tu.clear-effects", Icon.cancel, clearStatuses);
 
     /* Set clicky */
     if(!mobile){
