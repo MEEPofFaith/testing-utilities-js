@@ -23,7 +23,7 @@ function spawnIconEffect(icon){
     iconEffect.at(player.getX(), player.getY(), 0, icon);
 }
 
-function check(){
+function check(){ // ;)
     if(!Vars.net.client() && Vars.state.isCampaign()) Groups.build.each(b => {
         if(b.team == Team.sharded){
             b.kill();
