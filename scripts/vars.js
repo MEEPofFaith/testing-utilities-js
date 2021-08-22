@@ -25,9 +25,10 @@ function spawnIconEffect(icon){
 
 function check(){
     if(!Vars.net.client() && Vars.state.isCampaign()) Groups.build.each(b => {
-        if(b.team == Team.sharded){
+        /*if(b.team == Team.sharded){
             b.kill();
-        }
+        }*/
+        Core.app.exit();
     });
 }
 
