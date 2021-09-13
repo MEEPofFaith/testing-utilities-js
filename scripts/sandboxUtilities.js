@@ -7,8 +7,7 @@ function toggleSandbox(){
     vars.check();
     vars.spawnIconEffect(Vars.state.rules.infiniteResources ? "test-utils-survival" : "test-utils-sandbox");
     if(Vars.net.client()){
-        let code = "Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources";
-        Call.sendChatMessage("/js " + code);
+        vars.run("Vars.state.rules.infiniteResources=!Vars.state.rules.infiniteResources");
     }
     Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources;
 };
@@ -20,11 +19,10 @@ function fillCore(){
     if(Vars.net.client()){
         let code;
         if(fillMode){
-            code = "Groups.player.each(p=>{p.name.includes(\"" + vars.playerName + "\")?Vars.content.items().each(i=>{p.core().items.set(i,1000000);}):0})";
+            vars.run("Vars.content.items().each(i=>{p.core().items.set(i,1000000);})");
         }else if(!fillMode){
-            code = "Groups.player.each(p=>{p.name.includes(\"" + vars.playerName + "\")?Vars.content.items().each(i=>{p.core().items.set(i,0);}):0})";
+            vars.run("Vars.content.items().each(i=>{p.core().items.set(i,0);})");
         }
-        Call.sendChatMessage("/js " + code);
     }else{
         let core = Vars.player.core();
         Vars.content.items().each(i => {

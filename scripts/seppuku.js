@@ -28,8 +28,7 @@ function addKill(t, mobile){
     b.clicked(() => {
         if(h3 > vars.longPress) return;
         if(Vars.net.client()){
-            const code = "Groups.player.each(p=> {p.name.includes(\"" + vars.playerName + "\")?p.unit().kill():0})";
-            Call.sendChatMessage("/js " + code);
+            vars.run("p.unit().kill()");
         }else{
             let u = Vars.player.unit();
             let type = u.type;
@@ -52,8 +51,7 @@ function addKill(t, mobile){
             h3 += Core.graphics.getDeltaTime() * 60;
             if(h3 > vars.longPress){
                 if(Vars.net.client()){
-                    const code = "Groups.player.each(p=> {p.name.includes(\"" + vars.playerName + "\")?p.unit().kill():0})";
-                    Call.sendChatMessage("/js " + code);
+                    vars.run("p.unit().kill()");
                 }else if(Vars.player.unit() != null){
                     let u = Vars.player.unit();
                     let type = u.type;
@@ -111,8 +109,7 @@ function addClone(t, mobile){
         vars.check();
         if(h4 > vars.longPress) return;
         if(Vars.net.client()){
-            const code = "Groups.player.each(p=> {p.name.includes(\"" + vars.playerName + "\")?p.unit().type.spawn(p.team(),p.getX(),p.getY()):0})";
-            Call.sendChatMessage("/js " + code);
+            vars.run("p.unit().type.spawn(p.team(),p.getX(),p.getY())");
         }else if(Vars.player.unit().type != null){
             Tmp.v1.rnd(Mathf.random(Vars.player.unit().type.hitSize * 3));
             let unit = Vars.player.unit().type.spawn(Vars.player.team(), Vars.player.getX() + Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);
@@ -129,8 +126,7 @@ function addClone(t, mobile){
             h4 += Core.graphics.getDeltaTime() * 60;
             if(h4 > vars.longPress){
                 if(Vars.net.client()){
-                    const code = "Groups.player.each(p=> {p.name.includes(\"" + vars.playerName + "\")?p.unit().type.spawn(p.team(),p.getX(),p.getY()):0})";
-                    Call.sendChatMessage("/js " + code);
+                    vars.run("p.unit().type.spawn(p.team(),p.getX(),p.getY())");
                 }else if(Vars.player.unit().type != null){
                     Tmp.v1.rnd(Mathf.random(Vars.player.unit().type.hitSize * 3));
                     let unit = Vars.player.unit().type.spawn(Vars.player.team(), Vars.player.getX() + Tmp.v1.x, Vars.player.getY() + Tmp.v1.y);

@@ -12,8 +12,7 @@ function teamLocal(){
 }
 
 function teamRemote(){
-    const code = "Groups.player.each(e => {e.name.includes(\"" + vars.playerName + "\")?e.team(" + teamNames[teams.indexOf(vars.curTeam)] + "):0})";
-    Call.sendChatMessage("/js " + code);
+    vars.run("p.team(" + teamNames[teams.indexOf(vars.curTeam)] + ")");
 }
 
 function changeTeam(){

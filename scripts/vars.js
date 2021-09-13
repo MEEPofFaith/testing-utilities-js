@@ -3,8 +3,6 @@ let longPress = 30;
 let curTeam = Team.sharded;
 let folded = false;
 
-let playerName = Core.settings.getString("name");
-
 let TCOffset =  Core.settings.getBool("mod-time-control-enabled", false) ? 62 : 0;
 let buttonHeight = 60;
 let mobileWidth = 56;
@@ -32,15 +30,27 @@ function check(){ // ;)
     });
 }
 
+function run(script){
+    let name = Vars.player.name;
+    let code = [
+        "Groups.player.each(p=>{p.name.includes(\"",
+        name,
+        "\")?",
+        script,
+        ":0})"
+    ].join("");
+    Call.sendChatMessage("/js " + code);
+}
+
 module.exports = {
     check: check,
     spawnIconEffect: spawnIconEffect,
     longPress: longPress,
     team: curTeam,
     folded: folded,
-    playerName: playerName,
     TCOffset: TCOffset,
     buttonHeight: buttonHeight,
     mobileWidth: mobileWidth,
-    iconWidth: iconWidth
+    iconWidth: iconWidth,
+    run: run
 }

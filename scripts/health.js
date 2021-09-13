@@ -21,12 +21,9 @@ function healButton(){
     b.clicked(() => {
         vars.check();
         if(Vars.net.client()){
-            let code = "Groups.player.each(p=> {p.name.includes(\"" + vars.playerName + "\")?p.unit().dead=false:0})";
-            Call.sendChatMessage("/js " + code);
-            code = "Groups.player.each(p=> {p.name.includes(\"" + vars.playerName + "\")?p.unit().maxHealth=p.unit().type.health:0})";
-            Call.sendChatMessage("/js " + code);
-            code = "Groups.player.each(p=> {p.name.includes(\"" + vars.playerName + "\")?p.unit().health=p.unit().maxHealth:0})";
-            Call.sendChatMessage("/js " + code);
+            vars.run("p.unit().dead=false");
+            vars.run("p.unit().maxHealth=p.unit().type.health");
+            vars.run("p.unit().health=p.unit().maxHealth");
         }else{
             let player = Vars.player;
             if(player.unit() != null && player.unit().type != null){
@@ -67,12 +64,9 @@ function invincibilityButton(){
     b.clicked(() => {
         vars.check();
         if(Vars.net.client()){
-            let code = "Groups.player.each(p=> {p.name.includes(\"" + vars.playerName + "\")?p.unit().dead=false:0})";
-            Call.sendChatMessage("/js " + code);
-            code = "Groups.player.each(p=> {p.name.includes(\"" + vars.playerName + "\")?p.unit().maxHealth=Number.MAX_VALUE:0})";
-            Call.sendChatMessage("/js " + code);
-            code = "Groups.player.each(p=> {p.name.includes(\"" + vars.playerName + "\")?p.unit().health=Number.MAX_VALUE:0})";
-            Call.sendChatMessage("/js " + code);
+            vars.run("p.unit().dead=false");
+            vars.run("p.unit().maxHealth=Number.MAX_VALUE");
+            vars.run("p.unit().health=Number.MAX_VALUE");
         }else{
             let player = Vars.player;
             if(player.unit() != null && player.unit().type != null){

@@ -16,18 +16,7 @@ function applyLocal(perma){ // Singleplayer
 
 function applyRemote(perma){ // Multiplayer
     let eff = "StatusEffects." + status.name;
-
-    let code = [
-        "Groups.player.each(p=> {p.name.includes(\"",
-        vars.playerName,
-        "\")&&p.unit()!=null?p.unit().apply(",
-        eff,
-        ",",
-        perma ? "Number.MAX_VALUE" : duration * 60,
-        "):0})"
-    ].join("");
-
-    Call.sendChatMessage("/js " + code);
+    vars.run("(p.unit()!=null?p.unit().apply(" + eff + "," + (perma ? "Number.MAX_VALUE" : duration * 60) + "))");
 }
 
 function apply(){
@@ -43,11 +32,7 @@ function applyPerma(){
 function clearStatuses(){
     vars.check();
     if(Vars.net.client()){
-        let code = [
-            "Groups.player.each(p=> {p.name.includes(\"",
-            vars.playerName,
-            "\")&&p.unit()!=null?p.unit().clearStatuses():0})"
-        ];
+        vars.run("(p.unit()!=null?p.unit().clearStatuses():0)");
     }else{
         let p = Vars.player.unit();
         if(p != null){
