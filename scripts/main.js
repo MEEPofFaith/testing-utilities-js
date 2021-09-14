@@ -83,13 +83,13 @@ if(!Vars.headless){ //Now this is what I call inefficient hell.
         meta.displayName = "[#FCC21B]Testing Utilities";
         meta.author = "[#FCC21B]MEEP of Faith";
         meta.description = "Utilities for testing stuff" +
-            "\n\n\n[#FCC21B]Team Changer:[] Change teams easilty. Hold to collapse or expand the list." +
-            "\n\n[#FCC21B]Seppuku Button:[] Instantly kill yourself. Press and hold to commit crawler." +
-            "\n\n[#FCC21B]Clone Button:[] Instantly clones your player unit. Press and hold to mass clone. [red](Disabled in campaign)[]" +
-            "\n\n[#FCC21B]Heal Button:[] Sets your player unit's hp to its max." +
-            "\n\n[#FCC21B]Invincibility Button:[] Sets your player unit's hp to infinity. [red](Disabled in campaign)[]" +
-            "\n\n[#FCC21B]Sandbox/Survival Button:[] Toggles infinite resources. [red](Disabled in campaign)[]" +
-            "\n\n[#FCC21B]Fill/Dump Core:[] Fill or empty your core of all items. Hold to swap. [red](Disabled in campaign)[]" +
+            "\n\n\n[#FCC21B]Team Changer:[] Change teams easilty. Hold to collapse or expand the list. [red](Disabled in campaign)" +
+            "\n\n[#FCC21B]Seppuku Button:[] Instantly kill yourself. Press and hold to mass kill. A setting to make the death instant can be found in game settings." +
+            "\n\n[#FCC21B]Clone Button:[] Instantly clones your player unit. Press and hold to mass clone. [red](Disabled in campaign)" +
+            "\n\n[#FCC21B]Heal Button:[] Sets your player unit's hp to its max. [red](Disabled in campaign)" +
+            "\n\n[#FCC21B]Invincibility Button:[] Sets your player unit's hp to infinity. [red](Disabled in campaign)" +
+            "\n\n[#FCC21B]Sandbox/Survival Button:[] Toggles infinite resources. [red](Disabled in campaign)" +
+            "\n\n[#FCC21B]Fill/Dump Core:[] Fill or empty your core of all items. Hold to swap. [red](Disabled in campaign)" +
             "\n\n\n[#FCC21B]Also increases zooming range.[]"
     });
     
