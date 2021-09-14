@@ -12,7 +12,7 @@ function teamLocal(){
 }
 
 function teamRemote(){
-    vars.run("p.team(" + teamNames[teams.indexOf(vars.curTeam)] + ")");
+    vars.runServer("p.team(" + teamNames[teams.indexOf(vars.curTeam)] + ")");
 }
 
 function changeTeam(){

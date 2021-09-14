@@ -30,7 +30,7 @@ function check(){ // ;)
     });
 }
 
-function run(script){
+function runServer(script){
     let name = Vars.player.name;
     let code = [
         "Groups.player.each(p=>{p.name.includes(\"",
@@ -52,5 +52,5 @@ module.exports = {
     buttonHeight: buttonHeight,
     mobileWidth: mobileWidth,
     iconWidth: iconWidth,
-    run: run
+    runServer: runServer
 }

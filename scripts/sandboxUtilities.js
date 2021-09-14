@@ -7,7 +7,7 @@ function toggleSandbox(){
     vars.check();
     vars.spawnIconEffect(Vars.state.rules.infiniteResources ? "test-utils-survival" : "test-utils-sandbox");
     if(Vars.net.client()){
-        vars.run("Vars.state.rules.infiniteResources=!Vars.state.rules.infiniteResources");
+        vars.runServer("Vars.state.rules.infiniteResources=!Vars.state.rules.infiniteResources");
     }
     Vars.state.rules.infiniteResources = !Vars.state.rules.infiniteResources;
 };
@@ -19,9 +19,9 @@ function fillCore(){
     if(Vars.net.client()){
         let code;
         if(fillMode){
-            vars.run("Vars.content.items().each(i=>{p.core().items.set(i,1000000);})");
+            vars.runServer("Vars.content.items().each(i=>{p.core().items.set(i,1000000);})");
         }else if(!fillMode){
-            vars.run("Vars.content.items().each(i=>{p.core().items.set(i,0);})");
+            vars.runServer("Vars.content.items().each(i=>{p.core().items.set(i,0);})");
         }
     }else{
         let core = Vars.player.core();

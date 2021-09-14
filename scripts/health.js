@@ -21,9 +21,9 @@ function healButton(){
     b.clicked(() => {
         vars.check();
         if(Vars.net.client()){
-            vars.run("p.unit().dead=false");
-            vars.run("p.unit().maxHealth=p.unit().type.health");
-            vars.run("p.unit().health=p.unit().maxHealth");
+            vars.runServer("p.unit().dead=false");
+            vars.runServer("p.unit().maxHealth=p.unit().type.health");
+            vars.runServer("p.unit().health=p.unit().maxHealth");
         }else{
             let player = Vars.player;
             if(player.unit() != null && player.unit().type != null){
@@ -64,9 +64,9 @@ function invincibilityButton(){
     b.clicked(() => {
         vars.check();
         if(Vars.net.client()){
-            vars.run("p.unit().dead=false");
-            vars.run("p.unit().maxHealth=Number.MAX_VALUE");
-            vars.run("p.unit().health=Number.MAX_VALUE");
+            vars.runServer("p.unit().dead=false");
+            vars.runServer("p.unit().maxHealth=Number.MAX_VALUE");
+            vars.runServer("p.unit().health=Number.MAX_VALUE");
         }else{
             let player = Vars.player;
             if(player.unit() != null && player.unit().type != null){
