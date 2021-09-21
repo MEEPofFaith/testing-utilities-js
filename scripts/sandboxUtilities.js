@@ -19,19 +19,17 @@ function fillCore(){
     if(Vars.net.client()){
         let code;
         if(fillMode){
-            vars.runServer("Vars.content.items().each(i=>{p.core().items.set(i,1000000);})");
+            vars.runServer("Vars.content.items().each(i=>{p.core().items.set(i,p.core().storageCapacity);})");
         }else if(!fillMode){
             vars.runServer("Vars.content.items().each(i=>{p.core().items.set(i,0);})");
         }
     }else{
         let core = Vars.player.core();
-        Vars.content.items().each(i => {
-            const item = i;
-            const mode = fillMode;
-            if(core != null){
-                core.items.set(item, mode ? core.storageCapacity : 0);
-            }
-        });
+        if(core != null){
+            Vars.content.items().each(i => {
+                core.items.set(i, fillMode ? core.storageCapacity : 0);
+            });
+        }
     }
 };
 
