@@ -15,8 +15,8 @@ function applyLocal(perma){ // Singleplayer
 }
 
 function applyRemote(perma){ // Multiplayer
-    let eff = "Vars.content.statusEffects().find(b=>b.name==" + status.name + ")";
-    vars.runServer("(p.unit()!=null?p.unit().apply(" + eff + "," + (perma ? "Number.MAX_VALUE" : duration * 60) + "))");
+    let eff = "Vars.content.statusEffects().find(b=>b.name===" + status.name + ")";
+    vars.runServer("(p.unit()!=null?p.unit().apply(" + eff + "," + (perma ? "2147483647" : duration * 60) + "):0)");
 }
 
 function apply(){
