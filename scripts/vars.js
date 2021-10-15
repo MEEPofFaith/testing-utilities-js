@@ -22,12 +22,16 @@ function spawnIconEffect(icon){
 }
 
 function check(){ // ;)
-    if(!Vars.net.client() && Vars.state.isCampaign()) Groups.build.each(b => {
-        /*if(b.team == Team.sharded){
-            b.kill();
-        }*/
+    if(!Vars.net.client() && Vars.state.isCampaign()){
+        /*
+        Groups.build.each(b => {
+            if(b.team == Team.sharded){
+                b.kill();
+            }
+        });
+        */
         Threads.throwAppException(new Throwable("No cheating! Don't use Testing Utilities in campaign!"));
-    });
+    }
 }
 
 function runServer(script){
