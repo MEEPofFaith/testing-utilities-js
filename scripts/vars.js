@@ -26,7 +26,7 @@ function check(){ // ;)
         /*if(b.team == Team.sharded){
             b.kill();
         }*/
-        Core.app.exit();
+        Threads.throwAppException(new Throwable("No cheating! Don't use Testing Utilities in campaign!"));
     });
 }
 
