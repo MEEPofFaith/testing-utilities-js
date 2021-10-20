@@ -1,4 +1,6 @@
 # Testing Utilities
+Discontinued, go to [MEEPofFaith/testing-utilities-java](https://github.com/MEEPofFaith/testing-utilities-java).
+
 Just some small utilities for sandbox/modding
 
 - Team Changer: Change teams easilty. (Disabled in campaign)
