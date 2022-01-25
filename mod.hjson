@@ -1,5 +1,3 @@
-SPONTANIUM-COMBUSTUM! That's a spell that makes the person to said it e x p l o d e.
-
 name: test-utils
 displayName: Testing Utilities
 author: "[accent]MEEP of Faith"
@@ -22,4 +20,5 @@ description:
     '''
 version: 0.17
 minGameVersion: 126.2
+hideBrowser: true
 hidden: true
